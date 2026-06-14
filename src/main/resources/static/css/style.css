@@ -1,0 +1,58 @@
+/* Smooth transitions for interactive elements */
+.input-focus-ring {
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-press {
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+.btn-press:active {
+    transform: scale(0.97);
+}
+
+/* Animated gradient background for the illustration panel */
+.illustration-panel {
+    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 30%, #0f766e 70%, #115e59 100%);
+    background-size: 300% 300%;
+    animation: gradientShift 12s ease-in-out infinite;
+}
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+}
+
+/* Subtle floating animation for the decorative circles */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+}
+.float-slow {
+    animation: float 6s ease-in-out infinite;
+}
+.float-slower {
+    animation: float 8s ease-in-out infinite 1s;
+}
+.float-slowest {
+    animation: float 10s ease-in-out infinite 2s;
+}
+
+/* Custom scrollbar for form overflow (rare case) */
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+
+/* Accessibility: visible focus for keyboard navigation */
+*:focus-visible {
+    outline: 2px solid #0d9488;
+    outline-offset: 3px;
+    border-radius: 4px;
+}

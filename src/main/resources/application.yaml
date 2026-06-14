@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: physio
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/${DB_NAME:your_database_name}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:your_password}
+
+server:
+  servlet:
+    context-path: /physio
