@@ -1,13 +1,15 @@
-# Build stage
-FROM maven:3.9.6-eclipse-temurin-17 AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+# Use an official OpenJDK runtime as a parent image
+FROM eclipse-temurin:17-jdk-alpine
 
-# Run stage
-FROM eclipse-temurin:17-jre-jammy
+# Set the working directory inside the container
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+
+# Copy the executable jar file from your target/build folder into the container
+# Note: Update 'target/*.jar' to 'build/libs/*.jar' if you are using Gradle
+COPY target/*.jar app.jar
+
+# Expose the port your Spring Boot app runs on
 EXPOSE 8080
+
+# Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
