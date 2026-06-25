@@ -1,0 +1,44 @@
+body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+        
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.fill-icon { font-variation-settings: 'FILL' 1; }
+
+/* Hide all pages by default */
+.page-content { display: none; }
+input[type="radio"][name="page"] { display: none; }
+
+/* Show active page based on selected radio */
+#page-dashboard:checked ~ .app-shell #content-dashboard { display: block; }
+#page-courses:checked ~ .app-shell #content-courses { display: block; }
+#page-catalog:checked ~ .app-shell #content-catalog { display: block; }
+#page-schedule:checked ~ .app-shell #content-schedule { display: block; }
+#page-materials:checked ~ .app-shell #content-materials { display: block; }
+#page-assessments:checked ~ .app-shell #content-assessments { display: block; }
+#page-certificates:checked ~ .app-shell #content-certificates { display: block; }
+#page-feedback:checked ~ .app-shell #content-feedback { display: block; }
+#page-profile:checked ~ .app-shell #content-profile { display: block; }
+
+/* Desktop Sidebar Active States */
+#page-dashboard:checked ~ .app-shell .nav-dashboard,
+#page-courses:checked ~ .app-shell .nav-courses,
+#page-catalog:checked ~ .app-shell .nav-catalog,
+#page-schedule:checked ~ .app-shell .nav-schedule,
+#page-materials:checked ~ .app-shell .nav-materials,
+#page-assessments:checked ~ .app-shell .nav-assessments,
+#page-certificates:checked ~ .app-shell .nav-certificates,
+#page-feedback:checked ~ .app-shell .nav-feedback,
+#page-profile:checked ~ .app-shell .nav-profile {
+    background-color: #14b8a6; 
+    color: #ffffff; 
+    border-left: 4px solid #006b5f;
+}
+
+/* Mobile Navbar Active States */
+#page-dashboard:checked ~ .app-shell .mob-nav-dashboard,
+#page-courses:checked ~ .app-shell .mob-nav-courses,
+#page-schedule:checked ~ .app-shell .mob-nav-schedule,
+#page-materials:checked ~ .app-shell .mob-nav-materials,
+#page-profile:checked ~ .app-shell .mob-nav-profile {
+    color: #006b5f; 
+    background-color: rgba(20, 184, 166, 0.2);
+}

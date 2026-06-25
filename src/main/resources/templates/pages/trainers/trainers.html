@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+    <title>AlproPhysio Trainer Panel</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <link rel="stylesheet" th:href="@{/css/trainers.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        // New Design System Colors
+                        "on-background": "#0b1c30",
+                        "surface": "#f8f9ff",
+                        "primary": "#006b5f",
+                        "primary-container": "#14b8a6",
+                        "on-primary-container": "#00423b",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "outline-variant": "#bbcac6",
+                        "on-surface-variant": "#3c4947",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        
+                        // Old Design Brand Colors (Maintains content compatibility)
+                        brand: {
+                            50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 
+                            300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 
+                            600: '#0d9488', 700: '#0f766e', 800: '#115e59', 900: '#134e4a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        
+    </style>
+</head>
+
+<body class="text-on-background overflow-x-hidden antialiased flex flex-col min-h-screen">
+
+    <input id="page-dashboard" name="page" type="radio" checked/>
+    <input id="page-classes" name="page" type="radio"/>
+    <input id="page-schedule" name="page" type="radio"/>
+    <input id="page-materials" name="page" type="radio"/>
+    <input id="page-attendance" name="page" type="radio"/>
+    <input id="page-assessments" name="page" type="radio"/>
+    <input id="page-participants" name="page" type="radio"/>
+    <input id="page-reports" name="page" type="radio"/>
+    <input id="page-feedback" name="page" type="radio"/>
+
+    <div class="app-shell flex h-screen w-full">
+
+        <aside class="fixed left-0 top-0 h-full w-[280px] hidden lg:flex flex-col bg-surface border-r border-outline-variant py-6 z-30 overflow-y-auto">
+            <div class="px-6 mb-8">
+                <div class="flex items-center gap-3">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 shrink-0">
+                        <defs>
+                            <linearGradient id="alproTeal" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#14b8a6"/><stop offset="100%" stop-color="#006b5f"/>
+                            </linearGradient>
+                            <linearGradient id="alproWarm" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#fea619"/><stop offset="100%" stop-color="#f59e0b"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="100" height="100" rx="24" fill="#eff4ff" />
+                        <path d="M 28 76 C 28 50, 42 32, 50 32 C 58 32, 72 50, 72 76" stroke="url(#alproTeal)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M 32 58 Q 50 46 68 58" stroke="url(#alproWarm)" stroke-width="8" stroke-linecap="round"/>
+                        <circle cx="50" cy="19" r="7" fill="url(#alproWarm)"/>
+                    </svg>
+                    <div>
+                        <h1 class="text-[18px] font-bold text-primary leading-tight">AlproPhysio</h1>
+                        <p class="text-[12px] font-medium text-on-surface-variant">Trainer Console</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-1">
+                <p class="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Overview</p>
+                
+                <label for="page-dashboard" class="nav-dashboard flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">dashboard</span>
+                    <span class="text-[14px] font-semibold">Dashboard</span>
+                </label>
+                <label for="page-classes" class="nav-classes flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">school</span>
+                    <span class="text-[14px] font-semibold">My Classes</span>
+                </label>
+                <label for="page-schedule" class="nav-schedule flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">event_note</span>
+                    <span class="text-[14px] font-semibold">Schedule</span>
+                </label>
+                
+                <p class="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Teaching Tools</p>
+                
+                <label for="page-materials" class="nav-materials flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">source</span>
+                    <span class="text-[14px] font-semibold">Materials</span>
+                </label>
+                <label for="page-attendance" class="nav-attendance flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">fact_check</span>
+                    <span class="text-[14px] font-semibold">Attendance</span>
+                </label>
+                <label for="page-assessments" class="nav-assessments flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">grading</span>
+                    <span class="text-[14px] font-semibold">Assessments</span>
+                </label>
+
+                <p class="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Management</p>
+
+                <label for="page-participants" class="nav-participants flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">groups</span>
+                    <span class="text-[14px] font-semibold">Participants</span>
+                </label>
+                <label for="page-reports" class="nav-reports flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">analytics</span>
+                    <span class="text-[14px] font-semibold">Reports</span>
+                </label>
+                <label for="page-feedback" class="nav-feedback flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                    <span class="material-symbols-outlined text-[22px]">forum</span>
+                    <span class="text-[14px] font-semibold">Feedback</span>
+                </label>
+            </nav>
+
+            <div class="px-4 mt-6 pt-4 border-t border-outline-variant">
+                <button class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-error hover:bg-error-container transition-colors">
+                    <span class="material-symbols-outlined text-[22px]">logout</span>
+                    <span class="text-[14px] font-semibold">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col lg:ml-[280px] w-full min-h-screen overflow-y-auto bg-slate-50">
+            
+            <header class="flex justify-between items-center w-full px-4 lg:px-8 h-16 z-40 bg-white/80 backdrop-blur-xl border-b border-outline-variant sticky top-0">
+                <div class="flex items-center lg:hidden">
+                    <h1 class="text-[20px] font-bold text-primary">AlproPhysio</h1>
+                </div>
+                <div class="hidden lg:block text-sm text-slate-500 font-medium">
+                    June 24, 2026
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <div class="cursor-pointer flex items-center gap-3 hover:bg-slate-100 rounded-full p-1 pr-3 transition-colors">
+                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-sm font-bold border border-brand-200">SC</div>
+                        <span class="text-sm font-medium text-slate-700 hidden sm:block">Dr. Sarah Chen</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 max-w-5xl mx-auto w-full">
+                
+                <section id="content-dashboard" class="page-content space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Trainer Dashboard</h1>
+                        <p class="text-sm text-slate-500 mt-1">Overview of your classes and pending tasks.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                            <div class="text-2xl font-bold text-slate-800">4</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Active Classes</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                            <div class="text-2xl font-bold text-slate-800">12</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Total Students</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                            <div class="text-2xl font-bold text-amber-600">3</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Pending Attendance</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                            <div class="text-2xl font-bold text-rose-600">2</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Assessments Due</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 max-w-2xl">
+                        <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-brand-600">event_upcoming</span> Upcoming Classes
+                        </h2>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors">
+                                <div>
+                                    <p class="font-bold text-slate-800">Manual Therapy – Session 4</p>
+                                    <p class="text-sm text-slate-500 mt-0.5">Room 204</p>
+                                </div>
+                                <div class="px-4 py-1.5 bg-white shadow-sm border border-slate-200 rounded-lg text-sm font-bold text-brand-700">
+                                    10:00 AM
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors">
+                                <div>
+                                    <p class="font-bold text-slate-800">Rehab Exercises – Session 2</p>
+                                    <p class="text-sm text-slate-500 mt-0.5">Online Zoom Link</p>
+                                </div>
+                                <div class="px-4 py-1.5 bg-white shadow-sm border border-slate-200 rounded-lg text-sm font-bold text-brand-700">
+                                    2:00 PM
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="content-classes" class="page-content space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 class="text-2xl font-bold text-slate-800">My Classes</h1>
+                            <p class="text-sm text-slate-500 mt-1">Manage your active course sessions.</p>
+                        </div>
+                        <button class="px-5 py-2.5 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 transition-colors shadow-sm flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">add</span> New Class
+                        </button>
+                    </div>
+
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="font-bold text-slate-800 text-lg">Advanced Manual Therapy</h3>
+                            <p class="text-sm text-slate-500 mt-1 flex items-center gap-4">
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">groups</span> 12 participants</span>
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">view_agenda</span> 8 sessions</span>
+                            </p>
+                            <div class="flex gap-2 mt-5">
+                                <button class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Manage</button>
+                                <label for="page-attendance" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-amber-50 text-amber-700 rounded-lg cursor-pointer hover:bg-amber-100 transition-colors border border-amber-100">Attendance</label>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="font-bold text-slate-800 text-lg">Rehabilitation Science</h3>
+                            <p class="text-sm text-slate-500 mt-1 flex items-center gap-4">
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">groups</span> 8 participants</span>
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">view_agenda</span> 6 sessions</span>
+                            </p>
+                            <div class="flex gap-2 mt-5">
+                                <button class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Manage</button>
+                                <label for="page-attendance" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-amber-50 text-amber-700 rounded-lg cursor-pointer hover:bg-amber-100 transition-colors border border-amber-100">Attendance</label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="content-schedule" class="page-content space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Class Schedule</h1>
+                        <p class="text-sm text-slate-500 mt-1">Your weekly teaching timetable.</p>
+                    </div>
+                    <div class="space-y-3 max-w-3xl">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 border-l-brand-500">
+                            <div>
+                                <p class="font-bold text-slate-800 text-lg">Manual Therapy</p>
+                                <p class="text-sm text-slate-500 mt-1">Monday, Wednesday</p>
+                            </div>
+                            <div class="px-4 py-2 bg-slate-50 rounded-lg font-bold text-slate-700 border border-slate-100 text-center">
+                                10:00 AM
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 border-l-amber-500">
+                            <div>
+                                <p class="font-bold text-slate-800 text-lg">Rehabilitation Science</p>
+                                <p class="text-sm text-slate-500 mt-1">Tuesday, Thursday</p>
+                            </div>
+                            <div class="px-4 py-2 bg-slate-50 rounded-lg font-bold text-slate-700 border border-slate-100 text-center">
+                                2:00 PM
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="content-materials" class="page-content space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 class="text-2xl font-bold text-slate-800">Materials</h1>
+                            <p class="text-sm text-slate-500 mt-1">Upload and manage resources for your students.</p>
+                        </div>
+                        <button class="px-5 py-2.5 bg-brand-600 text-white rounded-lg text-sm font-semibold hover:bg-brand-700 transition-colors shadow-sm flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">cloud_upload</span> Upload File
+                        </button>
+                    </div>
+
+                    <div class="space-y-3 max-w-3xl">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-red-50 text-red-500 rounded-lg flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined">picture_as_pdf</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-800 text-sm">Lecture 1 - Introduction.pdf</p>
+                                    <p class="text-xs text-slate-400">Added 2 days ago · 2.4 MB</p>
+                                </div>
+                            </div>
+                            <button class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">download</span>
+                            </button>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined">play_circle</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-800 text-sm">Joint Mobilization Video.mp4</p>
+                                    <p class="text-xs text-slate-400">Added 5 days ago · 145 MB</p>
+                                </div>
+                            </div>
+                            <button class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">download</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="content-attendance" class="page-content space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Record Attendance</h1>
+                        <p class="text-sm text-slate-500 mt-1">Mark student presence for recent sessions.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 max-w-2xl">
+                        <label class="block text-sm font-semibold text-slate-800 mb-2">Select Class Session</label>
+                        <div class="relative mb-6">
+                            <select class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white appearance-none cursor-pointer">
+                                <option>Manual Therapy - Session 4 (Today)</option>
+                                <option>Rehabilitation Science - Session 2</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                            </div>
+                        </div>
+
+                        <div class="border rounded-lg border-slate-200 divide-y divide-slate-100 overflow-hidden">
+                            <div class="flex items-center justify-between p-4 bg-slate-50">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Student Name</span>
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Present</span>
+                            </div>
+                            <label class="flex items-center justify-between p-4 hover:bg-slate-50 cursor-pointer transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600">JS</div>
+                                    <span class="font-medium text-slate-800 text-sm">Jane Smith</span>
+                                </div>
+                                <input type="checkbox" checked class="w-5 h-5 rounded text-brand-600 focus:ring-brand-500 cursor-pointer">
+                            </label>
+                            <label class="flex items-center justify-between p-4 hover:bg-slate-50 cursor-pointer transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600">JD</div>
+                                    <span class="font-medium text-slate-800 text-sm">John Doe</span>
+                                </div>
+                                <input type="checkbox" class="w-5 h-5 rounded text-brand-600 focus:ring-brand-500 cursor-pointer">
+                            </label>
+                        </div>
+
+                        <button class="mt-6 w-full sm:w-auto px-6 py-2.5 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 transition-colors shadow-sm">
+                            Submit Attendance
+                        </button>
+                    </div>
+                </section>
+
+                <section id="content-assessments" class="page-content space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Assessments</h1>
+                        <p class="text-sm text-slate-500 mt-1">Review and grade submitted coursework.</p>
+                    </div>
+
+                    <div class="space-y-3 max-w-3xl">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <p class="font-bold text-slate-800 text-lg">Quiz 1 - Manual Therapy</p>
+                                <p class="text-sm text-slate-500 mt-1 flex items-center gap-4">
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">checklist</span> 12 submissions</span>
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">analytics</span> Avg 78%</span>
+                                </p>
+                            </div>
+                            <button class="px-5 py-2 bg-brand-50 text-brand-700 rounded-lg text-sm font-semibold border border-brand-100 hover:bg-brand-100 transition-colors w-full sm:w-auto">
+                                Grade Now
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="content-participants" class="page-content space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Participants</h1>
+                        <p class="text-sm text-slate-500 mt-1">View student details and global attendance.</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50 border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-4 text-left font-bold text-slate-500 uppercase tracking-wider text-xs">Name</th>
+                                        <th class="p-4 text-left font-bold text-slate-500 uppercase tracking-wider text-xs">Email</th>
+                                        <th class="p-4 text-center font-bold text-slate-500 uppercase tracking-wider text-xs">Attendance</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="p-4 font-medium text-slate-800 flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600">JS</div>
+                                            Jane Smith
+                                        </td>
+                                        <td class="p-4 text-slate-600">jane@example.com</td>
+                                        <td class="p-4 text-center">
+                                            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-md text-xs font-bold">85%</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="content-reports" class="page-content space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Reports</h1>
+                        <p class="text-sm text-slate-500 mt-1">Export class performance metrics.</p>
+                    </div>
+
+                    <div class="grid gap-4 sm:grid-cols-2 max-w-4xl">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col items-start h-full">
+                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-4">
+                                <span class="material-symbols-outlined">trending_up</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-lg">Performance Summary</h3>
+                            <p class="text-sm text-slate-500 mt-1">Manual Therapy · Class Average: 82%</p>
+                            <button class="mt-6 flex items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">download</span> Download CSV
+                            </button>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col items-start h-full">
+                            <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center mb-4">
+                                <span class="material-symbols-outlined">assignment_turned_in</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-lg">Assessment Summary</h3>
+                            <p class="text-sm text-slate-500 mt-1">Quiz 1 · Overall Average: 78%</p>
+                            <button class="mt-6 flex items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">download</span> Download CSV
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="content-feedback" class="page-content space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Student Feedback</h1>
+                        <p class="text-sm text-slate-500 mt-1">Review anonymous reviews for your classes.</p>
+                    </div>
+
+                    <div class="space-y-4 max-w-3xl">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <div class="flex items-center gap-1 text-amber-400 mb-2">
+                                <span class="material-symbols-outlined fill-icon text-[18px]">star</span>
+                                <span class="material-symbols-outlined fill-icon text-[18px]">star</span>
+                                <span class="material-symbols-outlined fill-icon text-[18px]">star</span>
+                                <span class="material-symbols-outlined fill-icon text-[18px]">star</span>
+                                <span class="material-symbols-outlined fill-icon text-[18px]">star</span>
+                            </div>
+                            <p class="font-medium text-slate-800 italic text-[15px]">"Great course! The hands-on examples were perfect."</p>
+                            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 uppercase tracking-wider font-semibold">
+                                <span>Jane Smith</span>
+                                <span>Manual Therapy</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <nav class="fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md border-t border-outline-variant shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] lg:hidden z-50 flex justify-around items-center px-2 pb-safe">
+            <label for="page-dashboard" class="mob-nav-dashboard flex flex-col items-center justify-center text-on-surface-variant rounded-xl px-3 py-1 cursor-pointer transition-colors scale-95 duration-100">
+                <span class="material-symbols-outlined text-[24px]">dashboard</span>
+                <span class="text-[10px] font-semibold mt-0.5">Home</span>
+            </label>
+            <label for="page-classes" class="mob-nav-classes flex flex-col items-center justify-center text-on-surface-variant rounded-xl px-3 py-1 cursor-pointer transition-colors scale-95 duration-100">
+                <span class="material-symbols-outlined text-[24px]">school</span>
+                <span class="text-[10px] font-semibold mt-0.5">Classes</span>
+            </label>
+            <label for="page-schedule" class="mob-nav-schedule flex flex-col items-center justify-center text-on-surface-variant rounded-xl px-3 py-1 cursor-pointer transition-colors scale-95 duration-100">
+                <span class="material-symbols-outlined text-[24px]">event_note</span>
+                <span class="text-[10px] font-semibold mt-0.5">Schedule</span>
+            </label>
+            <label for="page-materials" class="mob-nav-materials flex flex-col items-center justify-center text-on-surface-variant rounded-xl px-3 py-1 cursor-pointer transition-colors scale-95 duration-100">
+                <span class="material-symbols-outlined text-[24px]">source</span>
+                <span class="text-[10px] font-semibold mt-0.5">Materials</span>
+            </label>
+            <label for="page-assessments" class="mob-nav-assessments flex flex-col items-center justify-center text-on-surface-variant rounded-xl px-3 py-1 cursor-pointer transition-colors scale-95 duration-100">
+                <span class="material-symbols-outlined text-[24px]">grading</span>
+                <span class="text-[10px] font-semibold mt-0.5">Assess</span>
+            </label>
+        </nav>
+
+    </div>
+</body>
+</html>

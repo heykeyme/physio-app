@@ -21,14 +21,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.tokenBlacklist = tokenBlacklist;
     }
 
-    @Override
+    @Override 
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getRequestURI();
         // Allow login, register, logout, and static resources without token
-        if (path.startsWith("/physio/api/users/login") ||
+        if (path.startsWith("/physio/") ||
+            path.startsWith("/physio/api/users/login") ||
             path.startsWith("/physio/api/users/register") ||
             path.startsWith("/physio/api/users/logout")) {
             filterChain.doFilter(request, response);
@@ -49,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write("{\"error\":\"Token is invalid or expired\"}");
             return;
         }
-
+        
         // Optionally set authentication in security context
         filterChain.doFilter(request, response);
     }

@@ -1,0 +1,44 @@
+body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.fill-icon { font-variation-settings: 'FILL' 1; }
+
+/* Hide all pages by default */
+.page-content { display: none; }
+input[type="radio"][name="page"] { display: none; }
+
+/* Show active page based on selected radio */
+#page-dashboard:checked ~ .app-shell #content-dashboard { display: block; }
+#page-classes:checked ~ .app-shell #content-classes { display: block; }
+#page-schedule:checked ~ .app-shell #content-schedule { display: block; }
+#page-materials:checked ~ .app-shell #content-materials { display: block; }
+#page-attendance:checked ~ .app-shell #content-attendance { display: block; }
+#page-assessments:checked ~ .app-shell #content-assessments { display: block; }
+#page-participants:checked ~ .app-shell #content-participants { display: block; }
+#page-reports:checked ~ .app-shell #content-reports { display: block; }
+#page-feedback:checked ~ .app-shell #content-feedback { display: block; }
+
+/* Desktop Sidebar Active States */
+#page-dashboard:checked ~ .app-shell .nav-dashboard,
+#page-classes:checked ~ .app-shell .nav-classes,
+#page-schedule:checked ~ .app-shell .nav-schedule,
+#page-materials:checked ~ .app-shell .nav-materials,
+#page-attendance:checked ~ .app-shell .nav-attendance,
+#page-assessments:checked ~ .app-shell .nav-assessments,
+#page-participants:checked ~ .app-shell .nav-participants,
+#page-reports:checked ~ .app-shell .nav-reports,
+#page-feedback:checked ~ .app-shell .nav-feedback {
+    background-color: #14b8a6; 
+    color: #ffffff; 
+    border-left: 4px solid #006b5f;
+}
+
+/* Mobile Navbar Active States */
+#page-dashboard:checked ~ .app-shell .mob-nav-dashboard,
+#page-classes:checked ~ .app-shell .mob-nav-classes,
+#page-schedule:checked ~ .app-shell .mob-nav-schedule,
+#page-materials:checked ~ .app-shell .mob-nav-materials,
+#page-assessments:checked ~ .app-shell .mob-nav-assessments {
+    color: #006b5f; 
+    background-color: rgba(20, 184, 166, 0.2);
+}
