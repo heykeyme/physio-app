@@ -28,10 +28,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
         // Allow login, register, logout, and static resources without token
-        if (path.startsWith("/physio/") ||
-            path.startsWith("/physio/api/users/login") ||
-            path.startsWith("/physio/api/users/register") ||
-            path.startsWith("/physio/api/users/logout")) {
+        // Check if it's an asset or an auth endpoint
+        if (path.equals("/physio/") || 
+            path.contains("/css/") || 
+            path.contains("/js/") || 
+            path.contains("/api/users/")) {
+            
             filterChain.doFilter(request, response);
             return;
         }
