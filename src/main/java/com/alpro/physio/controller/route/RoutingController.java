@@ -1,4 +1,4 @@
-package com.alpro.physio.controller;
+package com.alpro.physio.controller.route;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +11,11 @@ public class RoutingController {
         return "login";  
     }
 
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
+    }
+
     @GetMapping("/admin")
     public String adminPage() {
         return "pages/admin/admin";
@@ -21,12 +26,12 @@ public class RoutingController {
         return "pages/management/management";
     }
 
-    @GetMapping("/participants")
+    @GetMapping("/participant")
     public String participantsPage() {
         return "pages/participants/participants";
     }
 
-    @GetMapping("/trainers")
+    @GetMapping("/trainer")
     public String trainersPage() {
         return "pages/trainers/trainers";
     }

@@ -142,7 +142,7 @@
             </nav>
 
             <div class="px-4 mt-6 pt-4 border-t border-outline-variant">
-                <button class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-error hover:bg-error-container transition-colors">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-error hover:bg-error-container transition-colors">
                     <span class="material-symbols-outlined text-[22px]">logout</span>
                     <span class="text-[14px] font-semibold">Logout</span>
                 </button>
@@ -512,5 +512,9 @@
         </nav>
 
     </div>
+    <script th:inline="javascript">
+        window.base = /*[[${apiBaseUrl}]]*/ "";
+    </script>
+    <script th:src="@{/js/trainer.js}"></script>
 </body>
 </html>

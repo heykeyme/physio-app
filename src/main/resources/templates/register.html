@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Register | AlproPhysio</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbce",
+                        "tertiary-container": "#b05e3d",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-fixed": "#370e00",
+                        "outline-variant": "#bcc9c6",
+                        "on-surface-variant": "#3d4947",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#008378",
+                        "primary": "#00685f",
+                        "secondary-container": "#6df5e1",
+                        "secondary-fixed-dim": "#4fdbc8",
+                        "inverse-primary": "#6bd8cb",
+                        "secondary-fixed": "#71f8e4",
+                        "on-surface": "#0b1c30",
+                        "error": "#ba1a1a",
+                        "on-background": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "teal-gradient": "linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed": "#00201c",
+                        "slate-800": "#1e293b",
+                        "surface-container-low": "#eff4ff",
+                        "surface": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#005048",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-high": "#dce9ff",
+                        "inverse-surface": "#213145",
+                        "surface-container": "#e5eeff",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#f4fffc",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary-container": "#fffbff",
+                        "slate-50": "#f8fafc",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#006a61",
+                        "on-secondary": "#ffffff",
+                        "outline": "#6d7a77",
+                        "secondary": "#006b5f",
+                        "on-primary-fixed": "#00201d",
+                        "on-secondary-container": "#006f64",
+                        "primary-fixed": "#89f5e7",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "tertiary": "#924628",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-tertiary-fixed-variant": "#773215",
+                        "slate-100": "#f1f5f9",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "24px",
+                        "stack-md": "16px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface min-h-screen flex items-center justify-center p-4 md:p-8">
+    <main class="w-full max-w-7xl bg-surface-container-lowest rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-5 min-h-[700px]">
+        <section class="hidden lg:flex lg:col-span-2 bg-animate-teal relative flex-col justify-between p-12 text-white overflow-hidden">
+            <div class="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl float-element" style="animation-delay: 0s;"></div>
+            <div class="absolute bottom-20 right-10 w-48 h-48 bg-white/10 rounded-full blur-3xl float-element" style="animation-delay: 2s;"></div>
+            <div class="absolute top-1/2 left-1/4 w-24 h-24 border border-white/20 rounded-full float-element" style="animation-delay: 1s;"></div>
+            
+            <div class="relative z-10">
+                <h1 class="font-headline-xl text-headline-xl tracking-tight mb-2">Alpro Physio</h1>
+                <div class="h-1 w-12 bg-white/40 rounded-full"></div>
+            </div>
+            <div class="relative z-10">
+                <h2 class="font-headline-lg text-headline-lg mb-4">Move better. Heal faster. Live stronger.</h2>
+                <p class="text-white/80 font-body-lg max-w-xs">
+                    Access personalized recovery programs and track your physical progress with clinical precision.
+                </p>
+            </div>
+            
+            <svg class="absolute bottom-0 left-0 w-full opacity-20" fill="none" viewbox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 100C100 50 200 150 300 100C400 50 500 150 500 100" stroke="white" stroke-width="2"></path>
+                <path d="M0 120C100 70 200 170 300 120C400 70 500 170 500 120" stroke="white" stroke-width="1"></path>
+            </svg>
+        </section>
+
+        <section class="col-span-1 lg:col-span-3 p-8 md:p-16 flex flex-col justify-center bg-surface-container-lowest">
+            <div class="max-w-md w-full mx-auto">
+                <header class="mb-10 text-center lg:text-left">
+                    <h2 class="font-headline-xl text-headline-xl text-primary mb-2">Join AlproPhysio</h2>
+                    <p class="text-on-surface-variant font-body-md">Create your account to start your recovery journey.</p>
+                </header>
+                
+                <form class="space-y-6" id="registrationForm" onsubmit="event.preventDefault()">
+                    <div class="space-y-2">
+                        <label class="font-label-md text-label-md text-on-surface-variant block ml-1">Full Name</label>
+                        <div class="relative group">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">person</span>
+                            <input id="fullnameInput" class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-outline-variant rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md" placeholder="Ahmad bin Abu" required="" type="text"/>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="font-label-md text-label-md text-on-surface-variant block ml-1">Email Address</label>
+                        <div class="relative group">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">mail</span>
+                            <input id="emailInput" class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-outline-variant rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md" placeholder="you@example.com" required="" type="email"/>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="font-label-md text-label-md text-on-surface-variant block ml-1">Password</label>
+                        <div class="relative group">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">lock</span>
+                            <input class="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-outline-variant rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md" id="passwordInput" placeholder="create a password" required="" type="password"/>
+                            <button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus:outline-none" onclick="togglePassword()" type="button">
+                                <span class="material-symbols-outlined" id="passwordIcon">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-primary text-white font-label-md text-label-md py-4 rounded-xl shadow-lg hover:bg-primary-container transition-all btn-press flex items-center justify-center gap-2" type="submit">
+                        Create Account
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
+                </form>
+                
+                <footer class="mt-10 text-center">
+                    <p class="text-on-surface-variant font-body-md">
+                        Already have an account? 
+                        <a class="text-primary font-bold hover:underline ml-1" th:href="@{/}" id="loginLink">Login here</a>
+                    </p>
+                </footer>
+            </div>
+        </section>
+    </main>
+
+    <script th:inline="javascript">
+        window.base = /*[[${apiBaseUrl}]]*/ "";
+    </script>
+    <script th:src="@{/js/register.js}"></script>
+</body>
+</html>

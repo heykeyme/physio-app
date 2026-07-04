@@ -12,3 +12,11 @@ spring:
 server:
   servlet:
     context-path: /physio
+
+app:
+  api:
+    base-url: http://localhost:8080
+
+  jwt:
+    secret: 4sHWaZkvUMig2+ecltlsY9pS7qirYJKGTuFDvLv+oDI=
+    expiration-ms: 3600000 # 1 hour in milliseconds
