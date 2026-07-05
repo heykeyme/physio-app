@@ -189,6 +189,10 @@
         </nav>
 
     </div>
+    <script th:inline="javascript">
+        window.base = /*[[${apiBaseUrl}]]*/ "";
+    </script>
     <script th:src="@{/js/admin.js}"></script>
+    <script th:src="@{/js/toast.js}"></script>
 </body>
 </html>

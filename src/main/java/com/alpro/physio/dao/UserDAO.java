@@ -51,4 +51,15 @@ public class UserDAO {
 
         return results.isEmpty() ? null : results.get(0);
     }
+
+    public List<UserDTO> findTrainer() {
+        String sql = "SELECT user_id, fullname FROM `user` WHERE role_id = 4 AND status = 1";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            UserDTO user = new UserDTO();
+            user.setUserId(rs.getString("user_id"));
+            user.setFullname(rs.getString("fullname"));
+            return user;
+        });
+    }
 }
