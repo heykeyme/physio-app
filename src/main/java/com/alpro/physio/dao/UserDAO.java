@@ -4,6 +4,8 @@ import java.security.SecureRandom;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -61,5 +63,10 @@ public class UserDAO {
             user.setFullname(rs.getString("fullname"));
             return user;
         });
+    }
+
+    public UserDTO findByUserId(String userId) {
+        String sql = "SELECT fullname FROM `user` WHERE user_id = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(UserDTO.class), userId);
     }
 }

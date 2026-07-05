@@ -1,14 +1,14 @@
 package com.alpro.physio.dao.root;
 
 import com.alpro.physio.dao.UserDAO;
-import com.alpro.physio.dao.CourseCatalogDAO;
-import com.alpro.physio.dao.CoursesDAO;
+import com.alpro.physio.dao.CourseDAO;
+import com.alpro.physio.dao.EnrollCourseDAO;
 
 public interface Dao {
     
     UserDAO userDAO();
 
-    CourseCatalogDAO courseCatalogDAO();
+    CourseDAO courseDAO();
 
-    CoursesDAO coursesDAO();
+    EnrollCourseDAO enrollCourseDAO();
 }

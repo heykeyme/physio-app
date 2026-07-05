@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alpro.physio.dao.UserDAO;
-import com.alpro.physio.dao.CourseCatalogDAO;
-import com.alpro.physio.dao.CoursesDAO;
+import com.alpro.physio.dao.CourseDAO;
+import com.alpro.physio.dao.EnrollCourseDAO;
 
 @Component
 public class DaoImpl implements Dao {
@@ -14,20 +14,20 @@ public class DaoImpl implements Dao {
     UserDAO userDAO;
 
     @Autowired
-    CourseCatalogDAO courseCatalogDAO;
+    CourseDAO courseDAO;
 
     @Autowired
-    CoursesDAO coursesDAO;
+    EnrollCourseDAO enrollCourseDAO;
 
     public UserDAO userDAO() {
         return userDAO;
     }
 
-    public CourseCatalogDAO courseCatalogDAO() {
-        return courseCatalogDAO;
+    public CourseDAO courseDAO() {
+        return courseDAO;
     }
 
-    public CoursesDAO coursesDAO() {
-        return coursesDAO;
+    public EnrollCourseDAO enrollCourseDAO() {
+        return enrollCourseDAO;
     }
 }

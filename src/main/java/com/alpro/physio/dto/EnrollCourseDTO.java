@@ -2,19 +2,18 @@ package com.alpro.physio.dto;
 
 public class EnrollCourseDTO {
 
-    private Integer id;
+    private int id;
     private String userId;
-    private String staffId;
-    private Integer courseId;
-    private Integer courseStatus;
+    private int courseId;
+    private byte courseStatus;
 
     // Getters and Setters
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -26,27 +25,19 @@ public class EnrollCourseDTO {
         this.userId = userId;
     }
 
-    public String getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
-    }
-
-    public Integer getCourseId() {
+    public int getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(Integer courseId) {
+    public void setCourseId(int courseId) {
         this.courseId = courseId;
     }
 
-    public Integer getCourseStatus() {
+    public byte getCourseStatus() {
         return courseStatus;
     }
 
-    public void setCourseStatus(Integer courseStatus) {
+    public void setCourseStatus(byte courseStatus) {
         this.courseStatus = courseStatus;
     }
 }

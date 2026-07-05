@@ -4,32 +4,33 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class CourseCatalogDTO {
+public class CourseDTO {
 
-    private Integer id;
-    private Integer courseId;
+    private int id;
+    private String courseName;
     private String staffId;
     private LocalDate courseDate;
     private LocalTime courseStartTime;
     private LocalTime courseEndTime;
     private BigDecimal coursePrice;
+    private boolean status;
 
     // Getters and Setters
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getCourseId() {
-        return courseId;
+    public String getCourseName() {
+        return courseName;
     }
 
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public String getStaffId() {
@@ -70,5 +71,13 @@ public class CourseCatalogDTO {
 
     public void setCoursePrice(BigDecimal coursePrice) {
         this.coursePrice = coursePrice;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }
