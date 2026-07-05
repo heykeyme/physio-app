@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.alpro.physio.dao.UserDAO;
 import com.alpro.physio.dao.CourseDAO;
+import com.alpro.physio.dao.CourseFeedbackDAO;
 import com.alpro.physio.dao.EnrollCourseDAO;
 
 @Component
@@ -19,6 +20,9 @@ public class DaoImpl implements Dao {
     @Autowired
     EnrollCourseDAO enrollCourseDAO;
 
+    @Autowired
+    CourseFeedbackDAO courseFeedbackDAO;
+
     public UserDAO userDAO() {
         return userDAO;
     }
@@ -29,5 +33,9 @@ public class DaoImpl implements Dao {
 
     public EnrollCourseDAO enrollCourseDAO() {
         return enrollCourseDAO;
+    }
+
+    public CourseFeedbackDAO courseFeedbackDAO() {
+        return courseFeedbackDAO;
     }
 }

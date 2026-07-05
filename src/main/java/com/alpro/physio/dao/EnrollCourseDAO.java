@@ -18,6 +18,11 @@ public class EnrollCourseDAO {
       return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), course_id).stream().findFirst().orElse(null);
     }
 
+    public EnrollCourseDTO findEnrollCourseById(int id) {
+      String sql = "SELECT * FROM enroll_course WHERE id = ?";
+      return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), id).stream().findFirst().orElse(null);
+    }
+
     public int countEnrollmentByCourseId(int course_id) {
       String sql = "SELECT COUNT(*) FROM enroll_course WHERE course_id = ?";
       Integer count = jdbcTemplate.queryForObject(sql, Integer.class, course_id);

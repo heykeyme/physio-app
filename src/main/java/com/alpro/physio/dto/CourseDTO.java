@@ -13,7 +13,7 @@ public class CourseDTO {
     private LocalTime courseStartTime;
     private LocalTime courseEndTime;
     private BigDecimal coursePrice;
-    private boolean status;
+    private Integer status;
 
     // Getters and Setters
 
@@ -73,11 +73,11 @@ public class CourseDTO {
         this.coursePrice = coursePrice;
     }
 
-    public boolean isStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }

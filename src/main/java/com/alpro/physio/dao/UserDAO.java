@@ -69,4 +69,9 @@ public class UserDAO {
         String sql = "SELECT fullname FROM `user` WHERE user_id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(UserDTO.class), userId);
     }
+
+    public List<UserDTO> findUserByRoleId(Integer roleId) {
+        String sql = "SELECT * FROM `user` WHERE role_id = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(UserDTO.class), roleId);
+    }
 }

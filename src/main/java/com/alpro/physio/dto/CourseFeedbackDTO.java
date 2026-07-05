@@ -1,11 +1,14 @@
 package com.alpro.physio.dto;
 
+import java.time.LocalDate;
+
 public class CourseFeedbackDTO {
 
     private Integer id;
     private Integer enrollCourseId;
     private Integer rate;
     private String review;
+    private LocalDate feedbackDate;
 
     // Getters and Setters
 
@@ -39,5 +42,13 @@ public class CourseFeedbackDTO {
 
     public void setReview(String review) {
         this.review = review;
+    }
+
+    public LocalDate getFeedbackDate() {
+        return feedbackDate;
+    }
+
+    public void setFeedbackDate(LocalDate feedbackDate) {
+        this.feedbackDate = feedbackDate;
     }
 }

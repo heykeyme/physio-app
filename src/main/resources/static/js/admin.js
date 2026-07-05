@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupCourseFormSubmission(userToken); // Initialize form handler
     } else {
         console.warn('No authorization token found. Redirecting to login...');
-        alert('Your session has expired or you are not logged in. Please log in again.');
+        showToast('Your session has expired or you are not logged in. Please log in again.');
         window.location.href = '/physio'; // Adjust to your actual login route
     }
 });
@@ -32,7 +32,7 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
             window.location.href = '/'; 
             return; 
         } else {
-            alert(data.message || 'Logout failed. Please try again.');
+            showToast(data.message || 'Logout failed. Please try again.');
         }
     } catch (error) {
         console.error('Logout error:', error);

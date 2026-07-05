@@ -18,26 +18,45 @@ public class CourseDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void addCourseCatalog(Integer courseId, String staffId, LocalDate courseDate, LocalTime courseStartTime, LocalTime courseEndTime, BigDecimal coursePrice) {
-        String sql = "INSERT INTO course_catalog " +
-                    "(course_id, staff_id, course_date, course_start_time, course_end_time, course_price) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
-        
-        jdbcTemplate.update(sql, courseId, staffId, courseDate, courseStartTime, courseEndTime, coursePrice);
+    public Integer createCourse(CourseDTO courseDTO) {
+        String sql = "INSERT INTO course (course_name, staff_id, course_date, course_start_time, course_end_time, course_price, status) VALUES (?, ?, ?, ?, ?, ?, 1)";
+        return jdbcTemplate.update(sql,
+            courseDTO.getCourseName(),
+            courseDTO.getStaffId(),
+            courseDTO.getCourseDate(),
+            courseDTO.getCourseStartTime(),
+            courseDTO.getCourseEndTime(),
+            courseDTO.getCoursePrice()
+        );
     }
 
-    public List<CourseDTO> findAllCourses() {
-		String sql = "SELECT * FROM course_catalog";
-		return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(CourseDTO.class));
-	}
-
-    public CourseDTO findCourseCatalogByCourseId(Integer courseId) {
-        String sql = "SELECT * FROM course_catalog WHERE course_id = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(CourseDTO.class), courseId);
+    public List<CourseDTO> getAllCourses() {
+        String sql = "SELECT * FROM course";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(CourseDTO.class));
     }
 
-    public void updateCourseCatalog(Integer courseId, String staffId, LocalDate courseDate, LocalTime courseStartTime, LocalTime courseEndTime, BigDecimal coursePrice) {
-        String sql = "UPDATE course_catalog SET staff_id = ?, course_date = ?, course_start_time = ?, course_end_time = ?, course_price = ? WHERE course_id = ?";
-        jdbcTemplate.update(sql, staffId, courseDate, courseStartTime, courseEndTime, coursePrice, courseId);
+    public CourseDTO getCourseById(Integer courseId) {
+        String sql = "SELECT * FROM course WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{courseId}, new BeanPropertyRowMapper<>(CourseDTO.class));
+    }
+
+    public CourseDTO updateCourse(CourseDTO courseDTO) {
+        String sql = "UPDATE course SET course_name = ?, staff_id = ?, course_date = ?, course_start_time = ?, course_end_time = ?, course_price = ? WHERE id = ?";
+        jdbcTemplate.update(sql,
+            courseDTO.getCourseName(),
+            courseDTO.getStaffId(),
+            courseDTO.getCourseDate(),
+            courseDTO.getCourseStartTime(),
+            courseDTO.getCourseEndTime(),
+            courseDTO.getCoursePrice(),
+            courseDTO.getId()
+        );
+        return getCourseById(courseDTO.getId());
+    }
+
+    public CourseDTO changeStatusCourse(CourseDTO courseDTO) {
+        String sql = "UPDATE course SET status = ? WHERE id = ?";
+        jdbcTemplate.update(sql, courseDTO.getStatus(), courseDTO.getId());
+        return getCourseById(courseDTO.getId());
     }
 }
