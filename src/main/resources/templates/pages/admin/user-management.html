@@ -1,0 +1,47 @@
+<section id="content-users" class="page-content space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h1 class="text-2xl font-bold text-slate-800">User Management</h1>
+        <div class="flex gap-2">
+            <input type="text" placeholder="Search users..." class="border border-slate-200 rounded-lg px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-brand-100">
+            <button class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700">Add User</button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                    <tr>
+                        <th class="text-left px-4 py-3 font-medium">Name</th>
+                        <th class="text-left px-4 py-3 font-medium">Email</th>
+                        <th class="text-left px-4 py-3 font-medium">Role</th>
+                        <th class="text-left px-4 py-3 font-medium">Status</th>
+                        <th class="text-right px-4 py-3 font-medium">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-4 py-3 font-medium text-slate-800">Jane Smith</td>
+                        <td class="px-4 py-3 text-slate-600">jane.smith@example.com</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Participant</span></td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Active</span></td>
+                        <td class="px-4 py-3 text-right">
+                            <button class="text-brand-600 font-medium hover:underline text-xs mr-3">View</button>
+                            <button class="text-rose-600 font-medium hover:underline text-xs">Deactivate</button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-4 py-3 font-medium text-slate-800">Dr. Sarah Chen</td>
+                        <td class="px-4 py-3 text-slate-600">sarah.chen@example.com</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">Trainer</span></td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Active</span></td>
+                        <td class="px-4 py-3 text-right">
+                            <button class="text-brand-600 font-medium hover:underline text-xs mr-3">View</button>
+                            <button class="text-rose-600 font-medium hover:underline text-xs">Deactivate</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
