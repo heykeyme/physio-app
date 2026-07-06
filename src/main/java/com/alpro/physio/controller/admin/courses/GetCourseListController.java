@@ -16,7 +16,6 @@ import com.alpro.physio.dto.CourseDTO;
 import com.alpro.physio.dto.UserDTO;
 import com.alpro.physio.service.AuthService;
 
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController

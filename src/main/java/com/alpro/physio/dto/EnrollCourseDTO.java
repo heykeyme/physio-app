@@ -6,6 +6,7 @@ public class EnrollCourseDTO {
     private String userId;
     private int courseId;
     private byte courseStatus;
+    private Integer attendanceStatus;
 
     // Getters and Setters
 
@@ -39,5 +40,13 @@ public class EnrollCourseDTO {
 
     public void setCourseStatus(byte courseStatus) {
         this.courseStatus = courseStatus;
+    }
+
+    public Integer getAttendanceStatus(){
+        return attendanceStatus;
+    }
+
+    public void setAttendanceStatus(Integer attendanceStatus){
+        this.attendanceStatus = attendanceStatus;
     }
 }

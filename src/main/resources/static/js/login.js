@@ -1,4 +1,4 @@
-document.getElementById("login-submit").addEventListener("click", function (e) {
+    document.getElementById("login-submit").addEventListener("click", function (e) {
     e.preventDefault();
 
     const email = document.getElementById("email").value;

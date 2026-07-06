@@ -29,5 +29,4 @@ public class EnrollCourseDAO {
 
       return (count != null) ? count : 0;
     }
-
 }

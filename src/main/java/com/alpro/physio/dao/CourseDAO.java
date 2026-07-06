@@ -59,4 +59,9 @@ public class CourseDAO {
         jdbcTemplate.update(sql, courseDTO.getStatus(), courseDTO.getId());
         return getCourseById(courseDTO.getId());
     }
+
+    public List<CourseDTO> getCoursesByTrainerId(String trainerId) {
+        String sql = "SELECT * FROM course WHERE staff_id = ?";
+        return jdbcTemplate.query(sql, new Object[]{trainerId}, new BeanPropertyRowMapper<>(CourseDTO.class));
+    }
 }
