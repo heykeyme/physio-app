@@ -22,9 +22,9 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/trainer/classes")
-public class ClassListController {
+public class MyClassesController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassListController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MyClassesController.class);
 
     @Autowired
     private Dao dao;
@@ -61,8 +61,13 @@ public class ClassListController {
                     classData.put("courseName", courseDTO.getCourseName());
                     classData.put("courseStatus", courseDTO.getStatus());
 
+                    Integer moduleCount = dao.moduleDAO().findTotalModuleByCourseId(courseDTO.getId());
+                    classData.put("totalModule", moduleCount);
+
                     int enrollmentCount = dao.enrollCourseDAO().countEnrollmentByCourseId(courseDTO.getId());
-                    classData.put("enrollmentCount", enrollmentCount);
+                    classData.put("totalParticipant", enrollmentCount);
+
+
 
                     classList.add(classData);
                 }

@@ -1,5 +1,7 @@
 package com.alpro.physio.dao;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,5 +30,10 @@ public class EnrollCourseDAO {
       Integer count = jdbcTemplate.queryForObject(sql, Integer.class, course_id);
 
       return (count != null) ? count : 0;
+    }
+
+    public List<EnrollCourseDTO> findAllParticipantByCourseId(int course_id) {
+      String sql = "SELECT * FROM enroll_course WHERE course_id = ?";
+      return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), course_id);
     }
 }

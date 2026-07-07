@@ -52,7 +52,53 @@
     </script>
 
     <style>
-        
+        /* ===================== ATTENDANCE MODAL (pure CSS toggle, no JS) =====================
+           #page-attendance is a standalone checkbox (NOT part of the name="page" nav group),
+           so opening the modal does not change which page is active behind it. */
+        #page-attendance { display: none; }
+
+        #attendance-modal {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 150ms ease;
+        }
+        #page-attendance:checked ~ #attendance-modal {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #attendance-modal .modal-panel {
+            transform: translateY(8px) scale(0.98);
+            transition: transform 150ms ease;
+        }
+        #page-attendance:checked ~ #attendance-modal .modal-panel {
+            transform: translateY(0) scale(1);
+        }
+
+        /* ===================== MANAGE COURSE MODAL (pure CSS toggle, no JS) =====================
+           #manage-course is a standalone checkbox (NOT part of the name="page" nav group). */
+        #manage-course { display: none; }
+
+        #manage-modal {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 150ms ease;
+        }
+        #manage-course:checked ~ #manage-modal {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #manage-modal .modal-panel {
+            transform: translateY(8px) scale(0.98);
+            transition: transform 150ms ease;
+        }
+        #manage-course:checked ~ #manage-modal .modal-panel {
+            transform: translateY(0) scale(1);
+        }
+        /* Module accordion: hide the default marker, rotate chevron when open */
+        #manage-modal details > summary { list-style: none; }
+        #manage-modal details > summary::-webkit-details-marker { display: none; }
+        #manage-modal .accordion-chevron { transition: transform 150ms ease; }
+        #manage-modal details[open] .accordion-chevron { transform: rotate(180deg); }
     </style>
 </head>
 
@@ -62,7 +108,11 @@
     <input id="page-classes" name="page" type="radio"/>
     <input id="page-schedule" name="page" type="radio"/>
     <input id="page-materials" name="page" type="radio"/>
-    <input id="page-attendance" name="page" type="radio"/>
+    <!-- Attendance is now a modal toggle, not a page. Kept as a standalone checkbox
+         so it overlays the current page instead of replacing it. -->
+    <input id="page-attendance" type="checkbox"/>
+    <!-- Manage course modal toggle. Standalone checkbox, same overlay pattern. -->
+    <input id="manage-course" type="checkbox"/>
     <input id="page-assessments" name="page" type="radio"/>
     <input id="page-participants" name="page" type="radio"/>
     <input id="page-reports" name="page" type="radio"/>
@@ -116,10 +166,10 @@
                     <span class="material-symbols-outlined text-[22px]">source</span>
                     <span class="text-[14px] font-semibold">Materials</span>
                 </label>
-                <label for="page-attendance" class="nav-attendance flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
+                <!-- <label for="page-attendance" class="nav-attendance flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
                     <span class="material-symbols-outlined text-[22px]">fact_check</span>
                     <span class="text-[14px] font-semibold">Attendance</span>
-                </label>
+                </label> -->
                 <label for="page-assessments" class="nav-assessments flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
                     <span class="material-symbols-outlined text-[22px]">grading</span>
                     <span class="text-[14px] font-semibold">Assessments</span>
@@ -236,10 +286,10 @@
                             <h3 class="font-bold text-slate-800 text-lg">Advanced Manual Therapy</h3>
                             <p class="text-sm text-slate-500 mt-1 flex items-center gap-4">
                                 <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">groups</span> 12 participants</span>
-                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">view_agenda</span> 8 sessions</span>
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">view_agenda</span> 8 module</span>
                             </p>
                             <div class="flex gap-2 mt-5">
-                                <button class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Manage</button>
+                                <label for="manage-course" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg cursor-pointer hover:bg-brand-100 transition-colors border border-brand-100">Manage</label>
                                 <label for="page-attendance" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-amber-50 text-amber-700 rounded-lg cursor-pointer hover:bg-amber-100 transition-colors border border-amber-100">Attendance</label>
                             </div>
                         </div>
@@ -250,7 +300,7 @@
                                 <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">view_agenda</span> 6 module</span>
                             </p>
                             <div class="flex gap-2 mt-5">
-                                <button class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Manage</button>
+                                <label for="manage-course" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg cursor-pointer hover:bg-brand-100 transition-colors border border-brand-100">Manage</label>
                                 <label for="page-attendance" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-amber-50 text-amber-700 rounded-lg cursor-pointer hover:bg-amber-100 transition-colors border border-amber-100">Attendance</label>
                             </div>
                         </div>
@@ -328,50 +378,9 @@
                     </div>
                 </section>
 
-                <section id="content-attendance" class="page-content space-y-6">
-                    <div>
-                        <h1 class="text-2xl font-bold text-slate-800">Record Attendance</h1>
-                        <p class="text-sm text-slate-500 mt-1">Mark student presence for recent sessions.</p>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 max-w-2xl">
-                        <label class="block text-sm font-semibold text-slate-800 mb-2">Select Class Session</label>
-                        <div class="relative mb-6">
-                            <select class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white appearance-none cursor-pointer">
-                                <option>Manual Therapy - Session 4 (Today)</option>
-                                <option>Rehabilitation Science - Session 2</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                                <span class="material-symbols-outlined text-[20px]">expand_more</span>
-                            </div>
-                        </div>
-
-                        <div class="border rounded-lg border-slate-200 divide-y divide-slate-100 overflow-hidden">
-                            <div class="flex items-center justify-between p-4 bg-slate-50">
-                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Student Name</span>
-                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Present</span>
-                            </div>
-                            <label class="flex items-center justify-between p-4 hover:bg-slate-50 cursor-pointer transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600">JS</div>
-                                    <span class="font-medium text-slate-800 text-sm">Jane Smith</span>
-                                </div>
-                                <input type="checkbox" checked class="w-5 h-5 rounded text-brand-600 focus:ring-brand-500 cursor-pointer">
-                            </label>
-                            <label class="flex items-center justify-between p-4 hover:bg-slate-50 cursor-pointer transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600">JD</div>
-                                    <span class="font-medium text-slate-800 text-sm">John Doe</span>
-                                </div>
-                                <input type="checkbox" class="w-5 h-5 rounded text-brand-600 focus:ring-brand-500 cursor-pointer">
-                            </label>
-                        </div>
-
-                        <button class="mt-6 w-full sm:w-auto px-6 py-2.5 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 transition-colors shadow-sm">
-                            Submit Attendance
-                        </button>
-                    </div>
-                </section>
+                <!-- Attendance is now handled by the modal at the bottom of <body>, opened via
+                     the "Attendance" buttons on each class card (label for="page-attendance").
+                     The old full-page attendance section has been removed. -->
 
                 <section id="content-assessments" class="page-content space-y-6">
                     <div>
@@ -509,6 +518,412 @@
         </nav>
 
     </div>
+
+    <!-- ===================== ATTENDANCE MODAL (overlay) =====================
+         Opened by any <label for="page-attendance"> (the Attendance buttons on class cards).
+         Must be a sibling of #page-attendance and appear AFTER it so the
+         #page-attendance:checked ~ #attendance-modal selector matches. -->
+    <div id="attendance-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <!-- Backdrop — clicking it closes the modal -->
+        <label for="page-attendance" class="absolute inset-0 bg-slate-900/40"></label>
+
+        <div class="modal-panel relative bg-white w-full max-w-md rounded-xl shadow-lg border border-slate-200 flex flex-col max-h-[85vh]">
+
+            <!-- Header -->
+            <div class="flex items-start justify-between p-5 border-b border-slate-100">
+                <div>
+                    <p class="text-xs font-semibold text-amber-700 uppercase tracking-wide">Attendance</p>
+                    <h3 class="font-bold text-slate-800 text-lg mt-0.5">Advanced Manual Therapy</h3>
+                </div>
+                <label for="page-attendance" class="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </label>
+            </div>
+
+            <!-- Body: dummy attendee rows -->
+            <div class="p-5 overflow-y-auto flex-1">
+                <ul class="divide-y divide-slate-100">
+
+                    <li class="flex items-center justify-between py-3">
+                        <p class="text-sm font-semibold text-slate-800">A123456789</p>
+                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                            <span class="text-xs font-medium text-slate-500">Present</span>
+                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-700 focus:ring-brand-700" checked>
+                        </label>
+                    </li>
+
+                    <li class="flex items-center justify-between py-3">
+                        <p class="text-sm font-semibold text-slate-800">B234567890</p>
+                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                            <span class="text-xs font-medium text-slate-500">Present</span>
+                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-700 focus:ring-brand-700">
+                        </label>
+                    </li>
+
+                    <li class="flex items-center justify-between py-3">
+                        <p class="text-sm font-semibold text-slate-800">C345678901</p>
+                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                            <span class="text-xs font-medium text-slate-500">Present</span>
+                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-700 focus:ring-brand-700" checked>
+                        </label>
+                    </li>
+
+                    <li class="flex items-center justify-between py-3">
+                        <p class="text-sm font-semibold text-slate-800">D456789012</p>
+                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                            <span class="text-xs font-medium text-slate-500">Present</span>
+                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-700 focus:ring-brand-700">
+                        </label>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex gap-2 p-5 border-t border-slate-100">
+                <label for="page-attendance" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-slate-50 text-slate-600 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors border border-slate-200">Cancel</label>
+                <button class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Save attendance</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===================== MANAGE COURSE MODAL (overlay) =====================
+         Opened by any <label for="manage-course"> (the Manage buttons on class cards).
+         Modules use native <details> for collapse. Add Module / Add Video / Add PDF
+         and the remove (×) buttons are driven by the inline script at the bottom.
+         Must be a sibling of #manage-course and appear AFTER it. -->
+    <div id="manage-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <!-- Backdrop — clicking it closes the modal -->
+        <label for="manage-course" class="absolute inset-0 bg-slate-900/40"></label>
+
+        <div class="modal-panel relative bg-white w-full max-w-lg rounded-xl shadow-lg border border-slate-200 flex flex-col max-h-[85vh]">
+
+            <!-- Header -->
+            <div class="flex items-start justify-between p-5 border-b border-slate-100">
+                <div>
+                    <p class="text-xs font-semibold text-brand-700 uppercase tracking-wide">Manage Course</p>
+                    <h3 class="font-bold text-slate-800 text-lg mt-0.5">Advanced Manual Therapy</h3>
+                    <p id="module-total" class="text-xs text-slate-400 mt-0.5">3 modules</p>
+                </div>
+                <label for="manage-course" class="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </label>
+            </div>
+
+            <!-- Body: module accordion. New modules are inserted before #add-module-btn. -->
+            <div id="modules-container" class="p-5 overflow-y-auto flex-1 space-y-3">
+
+                <!-- Module 1 (open by default) -->
+                <details open class="module border border-slate-200 rounded-lg overflow-hidden">
+                    <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <span class="material-symbols-outlined text-[20px] text-brand-600">view_agenda</span>
+                            <span class="font-semibold text-slate-800 text-sm truncate">Module 1 · Introduction</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="item-count text-xs text-slate-400">2 items</span>
+                            <span class="material-symbols-outlined accordion-chevron text-[20px] text-slate-400">expand_more</span>
+                        </div>
+                    </summary>
+                    <div class="module-body p-4 border-t border-slate-100 space-y-2">
+
+                        <!-- Video item -->
+                        <div class="module-item flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 shrink-0 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px]">play_circle</span>
+                                </div>
+                                <p class="text-sm font-medium text-slate-700 truncate">Joint Mobilization Demo.mp4</p>
+                            </div>
+                            <button type="button" class="remove-item w-7 h-7 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <!-- PDF item -->
+                        <div class="module-item flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 shrink-0 bg-red-50 text-red-500 rounded-lg flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                                </div>
+                                <p class="text-sm font-medium text-slate-700 truncate">Lecture 1 - Introduction.pdf</p>
+                            </div>
+                            <button type="button" class="remove-item w-7 h-7 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Empty state (hidden while items exist; shown by script when count hits 0) -->
+                        <p class="module-empty text-xs text-slate-400 text-center py-2" style="display:none">No materials yet. Add a video or PDF below.</p>
+
+                        <!-- Add actions -->
+                        <div class="module-actions flex gap-2 pt-1">
+                            <label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-brand-50 text-brand-700 rounded-lg border border-brand-100 hover:bg-brand-100 cursor-pointer transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">video_call</span> Add Video
+                                <input type="file" accept="video/*" class="hidden">
+                            </label>
+                            <label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-amber-50 text-amber-700 rounded-lg border border-amber-100 hover:bg-amber-100 cursor-pointer transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">upload_file</span> Add PDF
+                                <input type="file" accept="application/pdf" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Module 2 -->
+                <details class="module border border-slate-200 rounded-lg overflow-hidden">
+                    <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <span class="material-symbols-outlined text-[20px] text-brand-600">view_agenda</span>
+                            <span class="font-semibold text-slate-800 text-sm truncate">Module 2 · Assessment Techniques</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="item-count text-xs text-slate-400">3 items</span>
+                            <span class="material-symbols-outlined accordion-chevron text-[20px] text-slate-400">expand_more</span>
+                        </div>
+                    </summary>
+                    <div class="module-body p-4 border-t border-slate-100 space-y-2">
+
+                        <div class="module-item flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 shrink-0 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px]">play_circle</span>
+                                </div>
+                                <p class="text-sm font-medium text-slate-700 truncate">Palpation Basics.mp4</p>
+                            </div>
+                            <button type="button" class="remove-item w-7 h-7 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <div class="module-item flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 shrink-0 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px]">play_circle</span>
+                                </div>
+                                <p class="text-sm font-medium text-slate-700 truncate">Range of Motion Testing.mp4</p>
+                            </div>
+                            <button type="button" class="remove-item w-7 h-7 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <div class="module-item flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 shrink-0 bg-red-50 text-red-500 rounded-lg flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                                </div>
+                                <p class="text-sm font-medium text-slate-700 truncate">Assessment Checklist.pdf</p>
+                            </div>
+                            <button type="button" class="remove-item w-7 h-7 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <p class="module-empty text-xs text-slate-400 text-center py-2" style="display:none">No materials yet. Add a video or PDF below.</p>
+
+                        <div class="module-actions flex gap-2 pt-1">
+                            <label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-brand-50 text-brand-700 rounded-lg border border-brand-100 hover:bg-brand-100 cursor-pointer transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">video_call</span> Add Video
+                                <input type="file" accept="video/*" class="hidden">
+                            </label>
+                            <label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-amber-50 text-amber-700 rounded-lg border border-amber-100 hover:bg-amber-100 cursor-pointer transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">upload_file</span> Add PDF
+                                <input type="file" accept="application/pdf" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Module 3 (empty state) -->
+                <details class="module border border-slate-200 rounded-lg overflow-hidden">
+                    <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <span class="material-symbols-outlined text-[20px] text-brand-600">view_agenda</span>
+                            <span class="font-semibold text-slate-800 text-sm truncate">Module 3 · Treatment Planning</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="item-count text-xs text-slate-400">0 items</span>
+                            <span class="material-symbols-outlined accordion-chevron text-[20px] text-slate-400">expand_more</span>
+                        </div>
+                    </summary>
+                    <div class="module-body p-4 border-t border-slate-100 space-y-2">
+                        <p class="module-empty text-xs text-slate-400 text-center py-2">No materials yet. Add a video or PDF below.</p>
+                        <div class="module-actions flex gap-2 pt-1">
+                            <label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-brand-50 text-brand-700 rounded-lg border border-brand-100 hover:bg-brand-100 cursor-pointer transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">video_call</span> Add Video
+                                <input type="file" accept="video/*" class="hidden">
+                            </label>
+                            <label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-amber-50 text-amber-700 rounded-lg border border-amber-100 hover:bg-amber-100 cursor-pointer transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">upload_file</span> Add PDF
+                                <input type="file" accept="application/pdf" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Add module (handled by script) -->
+                <button id="add-module-btn" type="button" class="w-full flex items-center justify-center gap-1.5 text-sm font-semibold px-4 py-2.5 border border-dashed border-slate-300 text-slate-500 rounded-lg hover:border-brand-400 hover:text-brand-700 hover:bg-brand-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">add</span> Add Module
+                </button>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="flex gap-2 p-5 border-t border-slate-100">
+                <label for="manage-course" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-slate-50 text-slate-600 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors border border-slate-200">Close</label>
+                <button class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Save changes</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===================== MANAGE MODAL INTERACTIVITY (dummy, front-end only) =====================
+         Handles: Add Module, Add Video / Add PDF (append a row from the picked file name),
+         remove (×) an item, and keeps item / module counts in sync.
+         NOTE: nothing is uploaded — files are only listed by name in the browser.
+         File names are inserted with textContent (never innerHTML) to avoid injection. -->
+    <script>
+    (function () {
+        const modal = document.getElementById('manage-modal');
+        if (!modal) return;
+        const container = document.getElementById('modules-container');
+        const addModuleBtn = document.getElementById('add-module-btn');
+        const totalEl = document.getElementById('module-total');
+
+        function updateModuleTotal() {
+            const n = container.querySelectorAll('details.module').length;
+            totalEl.textContent = n + (n === 1 ? ' module' : ' modules');
+        }
+
+        function updateCount(moduleEl) {
+            const n = moduleEl.querySelectorAll('.module-item').length;
+            const countEl = moduleEl.querySelector('.item-count');
+            if (countEl) countEl.textContent = n + (n === 1 ? ' item' : ' items');
+            const empty = moduleEl.querySelector('.module-empty');
+            if (empty) empty.style.display = n === 0 ? '' : 'none';
+        }
+
+        // Build an item row (video or pdf) with a safe filename.
+        function makeItem(name, isVideo) {
+            const row = document.createElement('div');
+            row.className = 'module-item flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors';
+
+            const left = document.createElement('div');
+            left.className = 'flex items-center gap-3 min-w-0';
+
+            const iconBox = document.createElement('div');
+            iconBox.className = 'w-8 h-8 shrink-0 rounded-lg flex items-center justify-center ' +
+                (isVideo ? 'bg-blue-50 text-blue-500' : 'bg-red-50 text-red-500');
+            const icon = document.createElement('span');
+            icon.className = 'material-symbols-outlined text-[18px]';
+            icon.textContent = isVideo ? 'play_circle' : 'picture_as_pdf';
+            iconBox.appendChild(icon);
+
+            const label = document.createElement('p');
+            label.className = 'text-sm font-medium text-slate-700 truncate';
+            label.textContent = name; // safe: no HTML parsing
+
+            left.appendChild(iconBox);
+            left.appendChild(label);
+
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.className = 'remove-item w-7 h-7 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors';
+            const removeIcon = document.createElement('span');
+            removeIcon.className = 'material-symbols-outlined text-[18px]';
+            removeIcon.textContent = 'close';
+            remove.appendChild(removeIcon);
+
+            row.appendChild(left);
+            row.appendChild(remove);
+            return row;
+        }
+
+        // Build a fresh, empty module with an editable name field.
+        function makeModule(number) {
+            const d = document.createElement('details');
+            d.setAttribute('open', '');
+            d.className = 'module border border-slate-200 rounded-lg overflow-hidden';
+            d.innerHTML =
+                '<summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">' +
+                    '<div class="flex items-center gap-2.5 min-w-0 flex-1">' +
+                        '<span class="material-symbols-outlined text-[20px] text-brand-600">view_agenda</span>' +
+                        '<input type="text" class="module-title-input font-semibold text-slate-800 text-sm bg-transparent border-b border-dashed border-slate-300 focus:border-brand-500 outline-none flex-1 min-w-0" />' +
+                    '</div>' +
+                    '<div class="flex items-center gap-2 shrink-0">' +
+                        '<span class="item-count text-xs text-slate-400">0 items</span>' +
+                        '<span class="material-symbols-outlined accordion-chevron text-[20px] text-slate-400">expand_more</span>' +
+                    '</div>' +
+                '</summary>' +
+                '<div class="module-body p-4 border-t border-slate-100 space-y-2">' +
+                    '<p class="module-empty text-xs text-slate-400 text-center py-2">No materials yet. Add a video or PDF below.</p>' +
+                    '<div class="module-actions flex gap-2 pt-1">' +
+                        '<label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-brand-50 text-brand-700 rounded-lg border border-brand-100 hover:bg-brand-100 cursor-pointer transition-colors">' +
+                            '<span class="material-symbols-outlined text-[16px]">video_call</span> Add Video' +
+                            '<input type="file" accept="video/*" class="hidden">' +
+                        '</label>' +
+                        '<label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-amber-50 text-amber-700 rounded-lg border border-amber-100 hover:bg-amber-100 cursor-pointer transition-colors">' +
+                            '<span class="material-symbols-outlined text-[16px]">upload_file</span> Add PDF' +
+                            '<input type="file" accept="application/pdf" class="hidden">' +
+                        '</label>' +
+                    '</div>' +
+                '</div>';
+
+            const titleInput = d.querySelector('.module-title-input');
+            titleInput.value = 'Module ' + number + ' · New module';
+            // Typing in the title must not toggle the <details>.
+            titleInput.addEventListener('click', function (e) { e.stopPropagation(); });
+            titleInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); titleInput.blur(); }
+            });
+            return d;
+        }
+
+        // Add Module
+        addModuleBtn.addEventListener('click', function () {
+            const number = container.querySelectorAll('details.module').length + 1;
+            const mod = makeModule(number);
+            container.insertBefore(mod, addModuleBtn); // keep the button last
+            updateModuleTotal();
+            const input = mod.querySelector('.module-title-input');
+            input.focus();
+            input.select();
+            mod.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
+        // Add Video / Add PDF (delegated so it works on new modules too)
+        modal.addEventListener('change', function (e) {
+            const input = e.target.closest('input[type="file"]');
+            if (!input) return;
+            const moduleEl = input.closest('details.module');
+            if (!moduleEl) return;
+            const isVideo = (input.getAttribute('accept') || '').indexOf('video') !== -1;
+            const actions = moduleEl.querySelector('.module-actions');
+            Array.prototype.forEach.call(input.files, function (file) {
+                actions.insertAdjacentElement('beforebegin', makeItem(file.name, isVideo));
+            });
+            input.value = ''; // allow re-picking the same file
+            updateCount(moduleEl);
+        });
+
+        // Remove an item (delegated)
+        modal.addEventListener('click', function (e) {
+            const btn = e.target.closest('.remove-item');
+            if (!btn) return;
+            const moduleEl = btn.closest('details.module');
+            const row = btn.closest('.module-item');
+            if (row) row.remove();
+            if (moduleEl) updateCount(moduleEl);
+        });
+
+        // Initial sync of counts / empty states on load
+        Array.prototype.forEach.call(container.querySelectorAll('details.module'), updateCount);
+        updateModuleTotal();
+    })();
+    </script>
+
     <script th:inline="javascript">
         window.base = /*[[${apiBaseUrl}]]*/ "";
     </script>
