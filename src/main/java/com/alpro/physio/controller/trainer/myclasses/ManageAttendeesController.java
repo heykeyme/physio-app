@@ -58,6 +58,7 @@ public class ManageAttendeesController {
                     Map<String, Object> attendeeData = new LinkedHashMap<>();
                     attendeeData.put("courseId", participant.getCourseId());
                     attendeeData.put("userId", participant.getUserId());
+                    attendeeData.put("attendanceStatus", participant.getAttendanceStatus());
 
                     UserDTO user = dao.userDAO().findByUserId(participant.getUserId());
                     attendeeData.put("participantName", user.getFullname());

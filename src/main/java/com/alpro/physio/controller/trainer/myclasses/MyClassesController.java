@@ -66,9 +66,6 @@ public class MyClassesController {
 
                     int enrollmentCount = dao.enrollCourseDAO().countEnrollmentByCourseId(courseDTO.getId());
                     classData.put("totalParticipant", enrollmentCount);
-
-
-
                     classList.add(classData);
                 }
             }
