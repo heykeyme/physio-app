@@ -79,4 +79,6 @@ public class ManageAttendeesController {
 
         return ResponseEntity.ok(response);
     }
+
+    
 }
