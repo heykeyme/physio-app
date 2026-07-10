@@ -38,6 +38,11 @@ public class EnrollCourseDAO {
       return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), course_id);
     }
 
+    public List<EnrollCourseDTO> findAllCourseEnrollByUser(String userId) {
+      String sql = "SELECT * FROM enroll_course WHERE user_id = ?";
+      return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), userId);
+    }
+
     public Integer updateParticipantAttendance(String userId, int courseId, Integer attendanceStatus) {
       String sql = "UPDATE enroll_course SET attendance_status = ? WHERE user_id = ? AND course_id = ?";
       return jdbcTemplate.update(sql, attendanceStatus, userId, courseId);
