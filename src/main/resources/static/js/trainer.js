@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWeeklySchedule(userToken); 
     loadMyClasses(userToken);
     loadAssessmentClasses(userToken);
+    loadTrainerDashboard(userToken);
 });
 
 /**
@@ -1345,3 +1346,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+async function loadTrainerDashboard(token) {
+    const endpoint = `${window.base}/physio/trainer/dashboard/summary`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status === 'success' && result.data) {
+            const data = result.data;
+
+            const activeEl = document.getElementById('statActiveClasses');
+            const studentsEl = document.getElementById('statTotalStudents');
+            if (activeEl) activeEl.textContent = data.activeClassesCount;
+            if (studentsEl) studentsEl.textContent = data.totalStudentsCount;
+
+            const container = document.getElementById('upcomingClassesContainer');
+            if (container) {
+                container.innerHTML = '';
+
+                if (!data.upcomingClasses || data.upcomingClasses.length === 0) {
+                    container.innerHTML = `<p class="text-sm text-slate-500">No upcoming classes.</p>`;
+                } else {
+                    const borderColors = ['border-l-brand-500', 'border-l-amber-400', 'border-l-blue-400', 'border-l-rose-400'];
+
+                    data.upcomingClasses.forEach((entry, index) => {
+                        const color = borderColors[index % borderColors.length];
+
+                        const row = document.createElement('div');
+                        row.className = `flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 border-l-4 ${color} hover:bg-slate-100 transition-colors`;
+                        row.innerHTML = `
+                            <p class="font-bold text-slate-800 text-sm">${entry.courseName}</p>
+                            <div class="px-3 py-1 bg-white shadow-sm border border-slate-200 rounded-lg text-sm font-bold text-brand-700">
+                                ${entry.startTime}
+                            </div>
+                        `;
+                        container.appendChild(row);
+                    });
+                }
+            }
+
+        } else {
+            console.error('API returned an unexpected structure or error message:', result.message);
+        }
+
+    } catch (error) {
+        console.error('Failed to fetch trainer dashboard summary:', error);
+    }
+}

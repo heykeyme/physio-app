@@ -69,4 +69,10 @@ public class CourseDAO {
         String sql = "SELECT * FROM course WHERE staff_id = ? AND course_date BETWEEN ? AND ? " + "ORDER BY course_date ASC, course_start_time ASC";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(CourseDTO.class), staffId, startDate, endDate);
     }
+
+    public int countActiveCourses() {
+        String sql = "SELECT COUNT(*) FROM course WHERE status = 1";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        return count != null ? count : 0;
+    }
 }

@@ -14,6 +14,7 @@ import com.alpro.physio.dao.ModuleDAO;
 import com.alpro.physio.dao.PaymentTransactionDAO;
 import com.alpro.physio.dao.QuestionDAO;
 import com.alpro.physio.dao.QuestionOptionDAO;
+import com.alpro.physio.dao.ReportsDAO;
 import com.alpro.physio.dao.UploadPdfDAO;
 
 @Component
@@ -54,6 +55,9 @@ public class DaoImpl implements Dao {
 
     @Autowired
     PaymentTransactionDAO paymentTransactionDAO;
+
+    @Autowired
+    ReportsDAO reportsDAO;
 
     public UserDAO userDAO() {
         return userDAO;
@@ -101,5 +105,9 @@ public class DaoImpl implements Dao {
 
     public PaymentTransactionDAO paymentTransactionDAO(){
         return paymentTransactionDAO;
+    }
+
+    public ReportsDAO reportsDAO(){
+        return reportsDAO;
     }
 }

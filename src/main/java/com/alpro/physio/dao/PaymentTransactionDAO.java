@@ -1,6 +1,8 @@
 package com.alpro.physio.dao;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -30,4 +32,14 @@ public class PaymentTransactionDAO {
         String sql = "UPDATE payment_transaction SET status = ? WHERE bill_code = ?";
         jdbcTemplate.update(sql, status, billCode);
     }
+
+    public List<Map<String, Object>> findRecentSuccessfulPayments(int limit) {
+    String sql = "SELECT pt.amount, pt.created_at, c.course_name, u.fullname "
+               + "FROM payment_transaction pt "
+               + "JOIN course c ON c.id = pt.course_id "
+               + "JOIN `user` u ON u.user_id = pt.user_id "
+               + "WHERE pt.status = 1 "
+               + "ORDER BY pt.created_at DESC LIMIT ?";
+    return jdbcTemplate.queryForList(sql, limit);
+}
 }

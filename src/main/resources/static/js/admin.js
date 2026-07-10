@@ -36,7 +36,7 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
         if (data.success) {
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('user');
-            window.location.href = '/'; 
+            window.location.href = '/physio'; 
             return; 
         } else {
             showToast(data.message || 'Logout failed. Please try again.');
@@ -807,3 +807,251 @@ function setupRegisterStaffFormSubmission(token) {
         }
     });
 }
+
+let reportsCache = null;
+
+function statRow(label, value, colorClass = 'text-slate-700') {
+    return `<div class="flex justify-between border-b border-slate-50 pb-1"><span>${label}</span><span class="font-bold ${colorClass}">${value}</span></div>`;
+}
+
+async function loadAdminReports(token) {
+    const endpoint = `${window.base}/physio/admin/reports/summary`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const result = await response.json();
+        if (result.status !== 'success') {
+            console.error('API returned an unexpected structure or error message:', result.message);
+            return;
+        }
+
+        reportsCache = result.data;
+        const d = result.data;
+
+        // Enrollment
+        const et = d.enrollmentTotals;
+        document.getElementById('enrollmentReportStats').innerHTML =
+            statRow('Total Enrolments', et.total) +
+            statRow('Ongoing', et.ongoing) +
+            statRow('Completed', et.completed, 'text-emerald-600');
+
+        // Attendance
+        const at = d.attendanceTotals;
+        const attendancePct = at.total > 0 ? ((at.present / at.total) * 100).toFixed(1) : '0.0';
+        document.getElementById('attendanceReportStats').innerHTML =
+            statRow('Average Attendance', `${attendancePct}%`) +
+            statRow('Present', at.present, 'text-emerald-600') +
+            statRow('Absentees', at.absent, 'text-rose-600');
+
+        // Revenue
+        const rt = d.revenueTotals;
+        document.getElementById('revenueReportStats').innerHTML =
+            statRow('Total Revenue', `RM ${Number(rt.total_revenue).toFixed(2)}`) +
+            statRow('Successful Payments', rt.success_count, 'text-emerald-600') +
+            statRow('Pending / Failed', `${rt.pending_count} / ${rt.failed_count}`, 'text-amber-600');
+
+        // Feedback
+        const ft = d.feedbackTotals;
+        document.getElementById('feedbackReportStats').innerHTML =
+            statRow('Total Reviews', ft.total) +
+            statRow('Average Rating', `${Number(ft.avg_rating).toFixed(1)} / 5`);
+
+    } catch (error) {
+        console.error('Failed to fetch reports:', error);
+    }
+}
+
+function downloadReportPdf(title, totalsHtml, byCourseRows, courseColumnLabels) {
+    if (!reportsCache) {
+        showToast('Reports have not loaded yet.', 'error');
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(15, 118, 110);
+    doc.text(title, 20, 20);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(120, 120, 120);
+    doc.text(`Generated on ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`, 20, 27);
+
+    doc.setDrawColor(230, 230, 230);
+    doc.line(20, 32, 190, 32);
+
+    let y = 42;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(30, 41, 59);
+    doc.text('Summary', 20, y);
+    y += 8;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    totalsHtml.forEach(line => {
+        doc.text(line, 20, y);
+        y += 7;
+    });
+
+    y += 8;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('By Course (Top 5)', 20, y);
+    y += 8;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(courseColumnLabels[0], 20, y);
+    doc.text(courseColumnLabels[1], 150, y);
+    y += 6;
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, y - 2, 190, y - 2);
+
+    doc.setFont('helvetica', 'normal');
+    byCourseRows.forEach(row => {
+        doc.text(String(row.name), 20, y);
+        doc.text(String(row.value), 150, y);
+        y += 7;
+    });
+
+    const blobUrl = doc.output('bloburl');
+    window.open(blobUrl, '_blank');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const token = sessionStorage.getItem('token');
+    if (!token) return;
+
+    loadAdminReports(token);
+
+    document.getElementById('downloadEnrollmentReportBtn')?.addEventListener('click', () => {
+        const et = reportsCache.enrollmentTotals;
+        downloadReportPdf(
+            'Enrolment Report',
+            [`Total Enrolments: ${et.total}`, `Ongoing: ${et.ongoing}`, `Completed: ${et.completed}`],
+            reportsCache.enrollmentByCourse.map(r => ({ name: r.course_name, value: r.enrollment_count })),
+            ['Course', 'Enrolments']
+        );
+    });
+
+    document.getElementById('downloadAttendanceReportBtn')?.addEventListener('click', () => {
+        const at = reportsCache.attendanceTotals;
+        const pct = at.total > 0 ? ((at.present / at.total) * 100).toFixed(1) : '0.0';
+        downloadReportPdf(
+            'Attendance Report',
+            [`Average Attendance: ${pct}%`, `Present: ${at.present}`, `Absentees: ${at.absent}`],
+            reportsCache.attendanceByCourse.map(r => ({
+                name: r.course_name,
+                value: r.total > 0 ? `${((r.present / r.total) * 100).toFixed(0)}%` : '0%'
+            })),
+            ['Course', 'Attendance %']
+        );
+    });
+
+    document.getElementById('downloadRevenueReportBtn')?.addEventListener('click', () => {
+        const rt = reportsCache.revenueTotals;
+        downloadReportPdf(
+            'Revenue Report',
+            [`Total Revenue: RM ${Number(rt.total_revenue).toFixed(2)}`, `Successful: ${rt.success_count}`, `Pending/Failed: ${rt.pending_count}/${rt.failed_count}`],
+            reportsCache.revenueByCourse.map(r => ({ name: r.course_name, value: `RM ${Number(r.revenue).toFixed(2)}` })),
+            ['Course', 'Revenue']
+        );
+    });
+
+    document.getElementById('downloadFeedbackReportBtn')?.addEventListener('click', () => {
+        const ft = reportsCache.feedbackTotals;
+        downloadReportPdf(
+            'Feedback Report',
+            [`Total Reviews: ${ft.total}`, `Average Rating: ${Number(ft.avg_rating).toFixed(1)} / 5`],
+            reportsCache.feedbackByCourse.map(r => ({ name: r.course_name, value: `${Number(r.avg_rating).toFixed(1)} / 5 (${r.review_count})` })),
+            ['Course', 'Avg Rating']
+        );
+    });
+});
+
+async function loadAdminDashboard(token) {
+    const endpoint = `${window.base}/physio/admin/dashboard/summary`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const result = await response.json();
+        if (result.status !== 'success') {
+            console.error('API returned an unexpected structure or error message:', result.message);
+            return;
+        }
+
+        const d = result.data;
+
+        document.getElementById('statTotalUsers').textContent = d.totalUsers;
+        document.getElementById('statActiveCourses').textContent = d.activeCourses;
+        document.getElementById('statTotalRevenue').textContent = `RM ${Number(d.totalRevenue).toFixed(2)}`;
+
+        const container = document.getElementById('recentActivityContainer');
+        container.innerHTML = '';
+
+        if (!d.recentActivity || d.recentActivity.length === 0) {
+            container.innerHTML = `<p class="text-sm text-slate-500">No recent enrolments yet.</p>`;
+            return;
+        }
+
+        d.recentActivity.forEach(entry => {
+            const row = document.createElement('div');
+            row.className = 'flex justify-between';
+            row.innerHTML = `
+                <span class="text-slate-600">${entry.fullname} enrolled in "${entry.course_name}" (RM ${Number(entry.amount).toFixed(2)})</span>
+                <span class="text-slate-400">${formatRelativeTime(entry.created_at)}</span>
+            `;
+            container.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error('Failed to fetch admin dashboard:', error);
+    }
+}
+
+/**
+ * Converts an ISO timestamp into "X minutes/hours/days ago".
+ */
+function formatRelativeTime(timestamp) {
+    const then = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - then;
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min${diffMins === 1 ? '' : 's'} ago`;
+
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
+
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const token = sessionStorage.getItem('token');
+    if (!token) return;
+    loadAdminDashboard(token);
+});

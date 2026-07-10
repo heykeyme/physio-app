@@ -11,6 +11,7 @@ import com.alpro.physio.dao.ModuleDAO;
 import com.alpro.physio.dao.PaymentTransactionDAO;
 import com.alpro.physio.dao.QuestionDAO;
 import com.alpro.physio.dao.QuestionOptionDAO;
+import com.alpro.physio.dao.ReportsDAO;
 import com.alpro.physio.dao.UploadPdfDAO;
 
 public interface Dao {
@@ -38,4 +39,6 @@ public interface Dao {
     QuestionOptionDAO questionOptionDAO();
 
     PaymentTransactionDAO paymentTransactionDAO();
+
+    ReportsDAO reportsDAO(); 
 }

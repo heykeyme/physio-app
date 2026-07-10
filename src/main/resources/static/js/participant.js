@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadMyCourses(userToken);
     loadParticipantSchedule(userToken);
     loadParticipantMaterials(userToken);
+    loadDashboardSummary(userToken);
 
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get('paymentStatus');
@@ -700,4 +701,229 @@ function generateCertificatePdf(data) {
     // Open in a new tab rather than force-downloading
     const blobUrl = doc.output('bloburl');
     window.open(blobUrl, '_blank');
+}
+
+let selectedFeedbackRating = 0;
+
+/**
+ * Loads completed courses without existing feedback into the dropdown.
+ */
+async function loadFeedbackEligibleCourses(token) {
+    const endpoint = `${window.base}/physio/participant/feedback/eligible-courses`;
+    const select = document.getElementById('feedbackCourseSelect');
+
+    if (!select) {
+        console.warn('Feedback course select (#feedbackCourseSelect) not found in DOM.');
+        return;
+    }
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status === 'success' && Array.isArray(result.data)) {
+            select.length = 1; // keep placeholder
+
+            if (result.data.length === 0) {
+                const opt = document.createElement('option');
+                opt.disabled = true;
+                opt.textContent = 'No completed courses available for feedback';
+                select.appendChild(opt);
+                return;
+            }
+
+            result.data.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.enrollmentId;
+                opt.textContent = item.courseName;
+                select.appendChild(opt);
+            });
+
+        } else {
+            console.error('API returned an unexpected structure or error message:', result.message);
+        }
+
+    } catch (error) {
+        console.error('Failed to fetch eligible courses:', error);
+    }
+}
+
+/**
+ * Wires up the clickable star rating, tracking the selected value
+ * and visually filling stars up to that point.
+ */
+function setupStarRating() {
+    const container = document.getElementById('feedbackStarRating');
+    if (!container) return;
+
+    const stars = container.querySelectorAll('[data-star]');
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            selectedFeedbackRating = parseInt(star.dataset.star, 10);
+            updateStarDisplay(stars, selectedFeedbackRating);
+        });
+    });
+}
+
+function updateStarDisplay(stars, rating) {
+    stars.forEach(star => {
+        const value = parseInt(star.dataset.star, 10);
+        star.classList.toggle('fill-icon', value <= rating);
+    });
+}
+
+/**
+ * Submits the feedback form.
+ */
+async function submitFeedback(token) {
+    const select = document.getElementById('feedbackCourseSelect');
+    const reviewInput = document.getElementById('feedbackReviewInput');
+    const submitBtn = document.getElementById('submitFeedbackBtn');
+
+    const enrollmentId = select.value;
+    const review = reviewInput.value.trim();
+
+    if (!enrollmentId) {
+        showToast('Please select a course.', 'error');
+        return;
+    }
+
+    if (selectedFeedbackRating < 1) {
+        showToast('Please select a star rating.', 'error');
+        return;
+    }
+
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try {
+        const endpoint = `${window.base}/physio/participant/feedback/submit`;
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                enrollmentId: parseInt(enrollmentId, 10),
+                rate: selectedFeedbackRating,
+                review: review || null
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.status === 'success') {
+            showToast('Feedback submitted successfully!', 'success');
+            select.value = '';
+            reviewInput.value = '';
+            selectedFeedbackRating = 0;
+            updateStarDisplay(document.querySelectorAll('#feedbackStarRating [data-star]'), 0);
+            loadFeedbackEligibleCourses(token); // refresh — this course should now disappear from the list
+        } else {
+            showToast(result.message || 'Failed to submit feedback.', 'error');
+        }
+
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+        showToast('Failed to submit feedback.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const token = sessionStorage.getItem('token');
+    if (!token) return;
+
+    loadFeedbackEligibleCourses(token);
+    setupStarRating();
+
+    const submitBtn = document.getElementById('submitFeedbackBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', () => submitFeedback(token));
+    }
+});
+
+async function loadDashboardSummary(token) {
+    const endpoint = `${window.base}/physio/participant/dashboard/summary`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status === 'success' && result.data) {
+            const data = result.data;
+
+            const welcomeHeading = document.querySelector('#content-dashboard h1');
+            if (welcomeHeading) welcomeHeading.textContent = `Welcome back, ${data.fullName}`;
+
+            const statValues = document.querySelectorAll('#content-dashboard .grid.grid-cols-2 > div .text-2xl');
+            if (statValues.length >= 4) {
+                statValues[0].textContent = data.enrolledCoursesCount;
+                statValues[1].textContent = data.upcomingClassesCount;
+                statValues[2].textContent = data.pendingTasksCount ?? '—'; // not implemented yet
+                statValues[3].textContent = data.certificatesCount;
+            }
+
+            const scheduleContainer = document.querySelector('#content-dashboard .space-y-3');
+            if (scheduleContainer) {
+                scheduleContainer.innerHTML = '';
+
+                if (!data.todaySchedule || data.todaySchedule.length === 0) {
+                    scheduleContainer.innerHTML = `<p class="text-sm text-slate-500">No classes scheduled for today.</p>`;
+                } else {
+                    data.todaySchedule.forEach(entry => {
+                        const row = document.createElement('div');
+                        row.className = 'flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors rounded-xl border border-slate-100';
+                        row.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                <div class="w-1.5 h-10 bg-brand-500 rounded-full"></div>
+                                <div>
+                                    <p class="font-bold text-slate-800">${entry.courseName}</p>
+                                    <p class="text-sm text-slate-500 mt-0.5 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">schedule</span> ${entry.startTime} — ${entry.trainerName}
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                        scheduleContainer.appendChild(row);
+                    });
+                }
+            }
+
+        } else {
+            console.error('API returned an unexpected structure or error message:', result.message);
+        }
+
+    } catch (error) {
+        console.error('Failed to fetch dashboard summary:', error);
+    }
 }

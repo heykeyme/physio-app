@@ -76,4 +76,9 @@ public class EnrollCourseDAO {
       String sql = "INSERT INTO enroll_course (user_id, course_id) VALUES (?, ?)";
       jdbcTemplate.update(sql, userId, courseId);
     }
+
+    public List<EnrollCourseDTO> findCompletedEnrollmentsByUser(String userId) {
+      String sql = "SELECT * FROM enroll_course WHERE user_id = ? AND course_status = 1";
+      return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), userId);
+    }
 }
