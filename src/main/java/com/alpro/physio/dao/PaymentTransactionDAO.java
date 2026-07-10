@@ -34,12 +34,20 @@ public class PaymentTransactionDAO {
     }
 
     public List<Map<String, Object>> findRecentSuccessfulPayments(int limit) {
-    String sql = "SELECT pt.amount, pt.created_at, c.course_name, u.fullname "
-               + "FROM payment_transaction pt "
-               + "JOIN course c ON c.id = pt.course_id "
-               + "JOIN `user` u ON u.user_id = pt.user_id "
-               + "WHERE pt.status = 1 "
-               + "ORDER BY pt.created_at DESC LIMIT ?";
-    return jdbcTemplate.queryForList(sql, limit);
-}
+        String sql = "SELECT pt.amount, pt.created_at, c.course_name, u.fullname "
+                + "FROM payment_transaction pt "
+                + "JOIN course c ON c.id = pt.course_id "
+                + "JOIN `user` u ON u.user_id = pt.user_id "
+                + "WHERE pt.status = 1 "
+                + "ORDER BY pt.created_at DESC LIMIT ?";
+        return jdbcTemplate.queryForList(sql, limit);
+    }
+
+    public java.math.BigDecimal getRevenueThisMonth() {
+        String sql = "SELECT COALESCE(SUM(amount), 0) FROM payment_transaction "
+                + "WHERE status = 1 "
+                + "AND YEAR(created_at) = YEAR(CURDATE()) "
+                + "AND MONTH(created_at) = MONTH(CURDATE())";
+        return jdbcTemplate.queryForObject(sql, java.math.BigDecimal.class);
+    }
 }

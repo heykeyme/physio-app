@@ -1,0 +1,39 @@
+<section id="content-dashboard" class="page-content space-y-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Management Dashboard</h1>
+        <p class="text-sm text-slate-500 mt-1">High-level overview of business health</p>
+    </div>
+    
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+            <div id="statTrainingCompletion" class="text-2xl font-bold text-slate-800">0%</div>
+            <div class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wide">Training Completion</div>
+        </div>
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+            <div id="statActiveParticipants" class="text-2xl font-bold text-slate-800">0</div>
+            <div class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wide">Active Participants</div>
+        </div>
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+            <div id="statMonthlyRevenue" class="text-2xl font-bold text-brand-600">RM 0.00</div>
+            <div class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wide">Monthly Revenue</div>
+        </div>
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+            <div id="statAvgFeedback" class="text-2xl font-bold text-amber-500">0/5</div>
+            <div class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wide">Avg. Feedback</div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 max-w-2xl">
+        <h2 class="font-semibold text-slate-800 mb-4">Quick Stats</h2>
+        <div class="grid grid-cols-2 gap-6 text-sm">
+            <div class="bg-slate-50 p-4 rounded-lg">
+                <span class="text-slate-500">Enrolments This Month</span>
+                <p id="statEnrolmentsChange" class="text-lg font-bold text-slate-400 mt-1">Not available</p>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-lg">
+                <span class="text-slate-500">Attendance Rate</span>
+                <p id="statAttendanceRate" class="text-lg font-bold text-slate-800 mt-1">0%</p>
+            </div>
+        </div>
+    </div>
+</section>

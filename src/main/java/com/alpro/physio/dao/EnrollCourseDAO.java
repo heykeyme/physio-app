@@ -81,4 +81,10 @@ public class EnrollCourseDAO {
       String sql = "SELECT * FROM enroll_course WHERE user_id = ? AND course_status = 1";
       return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), userId);
     }
+
+    public int countParticipantsWithAtLeastOneCompletedCourse() {
+      String sql = "SELECT COUNT(DISTINCT user_id) FROM enroll_course WHERE course_status = 1";
+      Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+      return count != null ? count : 0;
+    }
 }

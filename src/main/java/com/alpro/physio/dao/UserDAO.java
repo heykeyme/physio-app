@@ -134,18 +134,18 @@ public class UserDAO {
     /**
      * Returns total user count, needed by the controller to calculate total pages.
      */
-        public int countAllUsers() {
-            String sql = "SELECT COUNT(*) FROM `user`";
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
-            return count != null ? count : 0;
-        }
+    public int countAllUsers() {
+        String sql = "SELECT COUNT(*) FROM `user`";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        return count != null ? count : 0;
+    }
 
-        public Integer changeStatusUser(Integer id, Integer status) {
-            String sql = "UPDATE `user` SET status = ? WHERE id = ?";
-            return jdbcTemplate.update(sql, status, id);
-        }
+    public Integer changeStatusUser(Integer id, Integer status) {
+        String sql = "UPDATE `user` SET status = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, status, id);
+    }
 
-        public List<UserDTO> searchUserByFullname(String fullname, int page) {
+    public List<UserDTO> searchUserByFullname(String fullname, int page) {
         int pageSize = 10;
         int offset = (page - 1) * pageSize; // assumes page is 1-indexed
 
@@ -198,5 +198,23 @@ public class UserDAO {
         String sql = "SELECT COUNT(*) FROM `user` WHERE fullname LIKE ? AND role_id IN (3, 4)";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, "%" + fullname + "%");
         return count != null ? count : 0;
+    }
+
+    public int countActiveParticipants() {
+        String sql = "SELECT COUNT(*) FROM `user` WHERE role_id = 3 AND status = 1";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        return count != null ? count : 0;
+    }
+
+    public int countAllParticipants() {
+        String sql = "SELECT COUNT(*) FROM `user` WHERE role_id = 3";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        return count != null ? count : 0;
+    }
+
+    public UserDTO findUserById(Integer id) {
+        String sql = "SELECT id, user_id, email, fullname, status, role_id FROM `user` WHERE id = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(UserDTO.class), id)
+                .stream().findFirst().orElse(null);
     }
 }
