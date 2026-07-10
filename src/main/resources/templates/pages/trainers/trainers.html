@@ -162,10 +162,6 @@
                 
                 <p class="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Teaching Tools</p>
              
-                <!-- <label for="page-attendance" class="nav-attendance flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
-                    <span class="material-symbols-outlined text-[22px]">fact_check</span>
-                    <span class="text-[14px] font-semibold">Attendance</span>
-                </label> -->
                 <label for="page-assessments" class="nav-assessments flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">
                     <span class="material-symbols-outlined text-[22px]">grading</span>
                     <span class="text-[14px] font-semibold">Assessments</span>
@@ -202,252 +198,14 @@
 
             <main class="flex-1 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 max-w-5xl mx-auto w-full">
                 
-                <section id="content-dashboard" class="page-content space-y-6">
-                    <div>
-                        <h1 class="text-2xl font-bold text-slate-800">Trainer Dashboard</h1>
-                        <p class="text-sm text-slate-500 mt-1">Overview of your classes and pending tasks.</p>
-                    </div>
+                <div th:replace="~{pages/trainers/trainer-dashboard.html}"></div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                            <div class="text-2xl font-bold text-slate-800">4</div>
-                            <div class="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Active Classes</div>
-                        </div>
-                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                            <div class="text-2xl font-bold text-slate-800">12</div>
-                            <div class="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Total Students</div>
-                        </div>
-                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                            <div class="text-2xl font-bold text-amber-600">3</div>
-                            <div class="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Pending Attendance</div>
-                        </div>
-                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                            <div class="text-2xl font-bold text-rose-600">2</div>
-                            <div class="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Assessments Due</div>
-                        </div>
-                    </div>
+                <div th:replace="~{pages/trainers/myclasses.html}"></div>
 
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 max-w-2xl">
-                        <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-brand-600">event_upcoming</span> Upcoming Classes
-                        </h2>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors">
-                                <div>
-                                    <p class="font-bold text-slate-800">Manual Therapy – Session 4</p>
-                                    <p class="text-sm text-slate-500 mt-0.5">Room 204</p>
-                                </div>
-                                <div class="px-4 py-1.5 bg-white shadow-sm border border-slate-200 rounded-lg text-sm font-bold text-brand-700">
-                                    10:00 AM
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors">
-                                <div>
-                                    <p class="font-bold text-slate-800">Rehab Exercises – Session 2</p>
-                                    <p class="text-sm text-slate-500 mt-0.5">Online Zoom Link</p>
-                                </div>
-                                <div class="px-4 py-1.5 bg-white shadow-sm border border-slate-200 rounded-lg text-sm font-bold text-brand-700">
-                                    2:00 PM
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <div th:replace="~{pages/trainers/schedule.html}"></div>
 
-                <section id="content-classes" class="page-content space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <h1 class="text-2xl font-bold text-slate-800">My Classes</h1>
-                            <p class="text-sm text-slate-500 mt-1">Manage your active course sessions.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                            <h3 class="font-bold text-slate-800 text-lg">Advanced Manual Therapy</h3>
-                            <p class="text-sm text-slate-500 mt-1 flex items-center gap-4">
-                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">groups</span> 12 participants</span>
-                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">view_agenda</span> 8 module</span>
-                            </p>
-                            <div class="flex gap-2 mt-5">
-                                <label for="manage-course" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg cursor-pointer hover:bg-brand-100 transition-colors border border-brand-100">Manage</label>
-                                <label for="page-attendance" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-amber-50 text-amber-700 rounded-lg cursor-pointer hover:bg-amber-100 transition-colors border border-amber-100">Attendance</label>
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                            <h3 class="font-bold text-slate-800 text-lg">Rehabilitation Science</h3>
-                            <p class="text-sm text-slate-500 mt-1 flex items-center gap-4">
-                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">groups</span> 8 participants</span>
-                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">view_agenda</span> 6 module</span>
-                            </p>
-                            <div class="flex gap-2 mt-5">
-                                <label for="manage-course" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg cursor-pointer hover:bg-brand-100 transition-colors border border-brand-100">Manage</label>
-                                <label for="page-attendance" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-amber-50 text-amber-700 rounded-lg cursor-pointer hover:bg-amber-100 transition-colors border border-amber-100">Attendance</label>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="content-schedule" class="page-content space-y-6">
-                    <div>
-                        <h1 class="text-2xl font-bold text-slate-800">Class Schedule</h1>
-                        <p class="text-sm text-slate-500 mt-1">Your weekly teaching timetable.</p>
-                    </div>
-                    <div class="space-y-3 max-w-3xl">
-                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 border-l-brand-500">
-                            <div>
-                                <p class="font-bold text-slate-800 text-lg">Manual Therapy</p>
-                                <p class="text-sm text-slate-500 mt-1">Monday, Wednesday</p>
-                            </div>
-                            <div class="px-4 py-2 bg-slate-50 rounded-lg font-bold text-slate-700 border border-slate-100 text-center">
-                                10:00 AM
-                            </div>
-                        </div>
-                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 border-l-amber-500">
-                            <div>
-                                <p class="font-bold text-slate-800 text-lg">Rehabilitation Science</p>
-                                <p class="text-sm text-slate-500 mt-1">Tuesday, Thursday</p>
-                            </div>
-                            <div class="px-4 py-2 bg-slate-50 rounded-lg font-bold text-slate-700 border border-slate-100 text-center">
-                                2:00 PM
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="content-materials" class="page-content space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <h1 class="text-2xl font-bold text-slate-800">Materials</h1>
-                            <p class="text-sm text-slate-500 mt-1">Upload and manage resources for your students.</p>
-                        </div>
-                        <button class="px-5 py-2.5 bg-brand-600 text-white rounded-lg text-sm font-semibold hover:bg-brand-700 transition-colors shadow-sm flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">cloud_upload</span> Upload File
-                        </button>
-                    </div>
-
-                    <div class="space-y-3 max-w-3xl">
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between group">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-red-50 text-red-500 rounded-lg flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined">picture_as_pdf</span>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-slate-800 text-sm">Lecture 1 - Introduction.pdf</p>
-                                    <p class="text-xs text-slate-400">Added 2 days ago · 2.4 MB</p>
-                                </div>
-                            </div>
-                            <button class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
-                                <span class="material-symbols-outlined text-[20px]">download</span>
-                            </button>
-                        </div>
-                        
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between group">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined">play_circle</span>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-slate-800 text-sm">Joint Mobilization Video.mp4</p>
-                                    <p class="text-xs text-slate-400">Added 5 days ago · 145 MB</p>
-                                </div>
-                            </div>
-                            <button class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
-                                <span class="material-symbols-outlined text-[20px]">download</span>
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Attendance is now handled by the modal at the bottom of <body>, opened via
-                     the "Attendance" buttons on each class card (label for="page-attendance").
-                     The old full-page attendance section has been removed. -->
-
-                <section id="content-assessments" class="page-content space-y-6">
-                    <div>
-                        <h1 class="text-2xl font-bold text-slate-800">Assessments</h1>
-                        <p class="text-sm text-slate-500 mt-1">Review and grade submitted coursework.</p>
-                    </div>
-
-                    <div class="space-y-3 max-w-3xl">
-                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div>
-                                <p class="font-bold text-slate-800 text-lg">Quiz 1 - Manual Therapy</p>
-                                <p class="text-sm text-slate-500 mt-1 flex items-center gap-4">
-                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">checklist</span> 12 submissions</span>
-                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">analytics</span> Avg 78%</span>
-                                </p>
-                            </div>
-                            <button class="px-5 py-2 bg-brand-50 text-brand-700 rounded-lg text-sm font-semibold border border-brand-100 hover:bg-brand-100 transition-colors w-full sm:w-auto">
-                                Grade Now
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="content-participants" class="page-content space-y-6">
-                    <div>
-                        <h1 class="text-2xl font-bold text-slate-800">Participants</h1>
-                        <p class="text-sm text-slate-500 mt-1">View student details and global attendance.</p>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead class="bg-slate-50 border-b border-slate-200">
-                                    <tr>
-                                        <th class="p-4 text-left font-bold text-slate-500 uppercase tracking-wider text-xs">Name</th>
-                                        <th class="p-4 text-left font-bold text-slate-500 uppercase tracking-wider text-xs">Email</th>
-                                        <th class="p-4 text-center font-bold text-slate-500 uppercase tracking-wider text-xs">Attendance</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    <tr class="hover:bg-slate-50 transition-colors">
-                                        <td class="p-4 font-medium text-slate-800 flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600">JS</div>
-                                            Jane Smith
-                                        </td>
-                                        <td class="p-4 text-slate-600">jane@example.com</td>
-                                        <td class="p-4 text-center">
-                                            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-md text-xs font-bold">85%</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="content-reports" class="page-content space-y-6">
-                    <div>
-                        <h1 class="text-2xl font-bold text-slate-800">Reports</h1>
-                        <p class="text-sm text-slate-500 mt-1">Export class performance metrics.</p>
-                    </div>
-
-                    <div class="grid gap-4 sm:grid-cols-2 max-w-4xl">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col items-start h-full">
-                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-4">
-                                <span class="material-symbols-outlined">trending_up</span>
-                            </div>
-                            <h3 class="font-bold text-slate-800 text-lg">Performance Summary</h3>
-                            <p class="text-sm text-slate-500 mt-1">Manual Therapy · Class Average: 82%</p>
-                            <button class="mt-6 flex items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">download</span> Download CSV
-                            </button>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col items-start h-full">
-                            <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center mb-4">
-                                <span class="material-symbols-outlined">assignment_turned_in</span>
-                            </div>
-                            <h3 class="font-bold text-slate-800 text-lg">Assessment Summary</h3>
-                            <p class="text-sm text-slate-500 mt-1">Quiz 1 · Overall Average: 78%</p>
-                            <button class="mt-6 flex items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">download</span> Download CSV
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
+                <div th:replace="~{pages/trainers/assessment.html}"></div>
+                
                 <section id="content-feedback" class="page-content space-y-6">
                     <div>
                         <h1 class="text-2xl font-bold text-slate-800">Student Feedback</h1>
@@ -505,67 +263,57 @@
          Must be a sibling of #page-attendance and appear AFTER it so the
          #page-attendance:checked ~ #attendance-modal selector matches. -->
     <div id="attendance-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <!-- Backdrop — clicking it closes the modal -->
-        <label for="page-attendance" class="absolute inset-0 bg-slate-900/40"></label>
+         <div id="attendance-modal-backdrop" class="absolute inset-0 bg-slate-900/40"></div>
 
         <div class="modal-panel relative bg-white w-full max-w-md rounded-xl shadow-lg border border-slate-200 flex flex-col max-h-[85vh]">
 
-            <!-- Header -->
             <div class="flex items-start justify-between p-5 border-b border-slate-100">
                 <div>
                     <p class="text-xs font-semibold text-amber-700 uppercase tracking-wide">Attendance</p>
-                    <h3 class="font-bold text-slate-800 text-lg mt-0.5">Advanced Manual Therapy</h3>
+                    <h3 id="attendanceCourseName" class="font-bold text-slate-800 text-lg mt-0.5">Loading...</h3>
                 </div>
-                <label for="page-attendance" class="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors">
+                <button type="button" id="closeAttendanceModalBtn" class="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors">
                     <span class="material-symbols-outlined text-[20px]">close</span>
-                </label>
+                </button>
             </div>
 
-            <!-- Body: dummy attendee rows -->
             <div class="p-5 overflow-y-auto flex-1">
-                <ul class="divide-y divide-slate-100">
-
-                    <li class="flex items-center justify-between py-3">
-                        <p class="text-sm font-semibold text-slate-800">A123456789</p>
-                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                            <span class="text-xs font-medium text-slate-500">Present</span>
-                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-700 focus:ring-brand-700" checked>
-                        </label>
-                    </li>
-
-                    <li class="flex items-center justify-between py-3">
-                        <p class="text-sm font-semibold text-slate-800">B234567890</p>
-                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                            <span class="text-xs font-medium text-slate-500">Present</span>
-                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-700 focus:ring-brand-700">
-                        </label>
-                    </li>
-
-                    <li class="flex items-center justify-between py-3">
-                        <p class="text-sm font-semibold text-slate-800">C345678901</p>
-                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                            <span class="text-xs font-medium text-slate-500">Present</span>
-                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-700 focus:ring-brand-700" checked>
-                        </label>
-                    </li>
-
-                    <li class="flex items-center justify-between py-3">
-                        <p class="text-sm font-semibold text-slate-800">D456789012</p>
-                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                            <span class="text-xs font-medium text-slate-500">Present</span>
-                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-700 focus:ring-brand-700">
-                        </label>
-                    </li>
-
+                <ul id="attendanceList" class="divide-y divide-slate-100">
+                    <!-- attendee rows injected by JS -->
                 </ul>
             </div>
 
-            <!-- Footer -->
             <div class="flex gap-2 p-5 border-t border-slate-100">
-                <label for="page-attendance" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-slate-50 text-slate-600 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors border border-slate-200">Cancel</label>
-                <button class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Save attendance</button>
+                <button type="button" id="cancelAttendanceBtn" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-slate-50 text-slate-600 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors border border-slate-200">Cancel</button>
+                <button type="button" id="saveAttendanceBtn" class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Save attendance</button>
             </div>
+        </div>
+    </div>
 
+    <!-- ===================== MODULE NAME PROMPT MODAL =====================
+     JS-controlled only (no checkbox toggle needed, unlike attendance/manage
+     modals) — shown/hidden directly via classList since it's triggered
+     purely from a function call, not a persistent page element. -->
+    <div id="module-name-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
+        <div id="module-name-modal-backdrop" class="absolute inset-0 bg-slate-900/40"></div>
+
+        <div class="relative bg-white w-full max-w-sm rounded-xl shadow-lg border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-800 text-base mb-1">New Module</h3>
+            <p class="text-xs text-slate-500 mb-3">Enter a name for the new module.</p>
+
+            <input type="text" id="moduleNameInput" placeholder="e.g., Introduction to Physio"
+                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none mb-4" />
+
+            <div class="flex gap-2 justify-end">
+                <button type="button" id="moduleNameCancelBtn"
+                    class="px-4 py-2 border border-slate-200 bg-white text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-100 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" id="moduleNameConfirmBtn"
+                    class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors">
+                    Create
+                </button>
+            </div>
         </div>
     </div>
 
@@ -760,154 +508,10 @@
         </div>
     </div>
 
-    <!-- ===================== MANAGE MODAL INTERACTIVITY (dummy, front-end only) =====================
-         Handles: Add Module, Add Video / Add PDF (append a row from the picked file name),
-         remove (×) an item, and keeps item / module counts in sync.
-         NOTE: nothing is uploaded — files are only listed by name in the browser.
-         File names are inserted with textContent (never innerHTML) to avoid injection. -->
-    <script>
-    (function () {
-        const modal = document.getElementById('manage-modal');
-        if (!modal) return;
-        const container = document.getElementById('modules-container');
-        const addModuleBtn = document.getElementById('add-module-btn');
-        const totalEl = document.getElementById('module-total');
-
-        function updateModuleTotal() {
-            const n = container.querySelectorAll('details.module').length;
-            totalEl.textContent = n + (n === 1 ? ' module' : ' modules');
-        }
-
-        function updateCount(moduleEl) {
-            const n = moduleEl.querySelectorAll('.module-item').length;
-            const countEl = moduleEl.querySelector('.item-count');
-            if (countEl) countEl.textContent = n + (n === 1 ? ' item' : ' items');
-            const empty = moduleEl.querySelector('.module-empty');
-            if (empty) empty.style.display = n === 0 ? '' : 'none';
-        }
-
-        // Build an item row (video or pdf) with a safe filename.
-        function makeItem(name, isVideo) {
-            const row = document.createElement('div');
-            row.className = 'module-item flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors';
-
-            const left = document.createElement('div');
-            left.className = 'flex items-center gap-3 min-w-0';
-
-            const iconBox = document.createElement('div');
-            iconBox.className = 'w-8 h-8 shrink-0 rounded-lg flex items-center justify-center ' +
-                (isVideo ? 'bg-blue-50 text-blue-500' : 'bg-red-50 text-red-500');
-            const icon = document.createElement('span');
-            icon.className = 'material-symbols-outlined text-[18px]';
-            icon.textContent = isVideo ? 'play_circle' : 'picture_as_pdf';
-            iconBox.appendChild(icon);
-
-            const label = document.createElement('p');
-            label.className = 'text-sm font-medium text-slate-700 truncate';
-            label.textContent = name; // safe: no HTML parsing
-
-            left.appendChild(iconBox);
-            left.appendChild(label);
-
-            const remove = document.createElement('button');
-            remove.type = 'button';
-            remove.className = 'remove-item w-7 h-7 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors';
-            const removeIcon = document.createElement('span');
-            removeIcon.className = 'material-symbols-outlined text-[18px]';
-            removeIcon.textContent = 'close';
-            remove.appendChild(removeIcon);
-
-            row.appendChild(left);
-            row.appendChild(remove);
-            return row;
-        }
-
-        // Build a fresh, empty module with an editable name field.
-        function makeModule(number) {
-            const d = document.createElement('details');
-            d.setAttribute('open', '');
-            d.className = 'module border border-slate-200 rounded-lg overflow-hidden';
-            d.innerHTML =
-                '<summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">' +
-                    '<div class="flex items-center gap-2.5 min-w-0 flex-1">' +
-                        '<span class="material-symbols-outlined text-[20px] text-brand-600">view_agenda</span>' +
-                        '<input type="text" class="module-title-input font-semibold text-slate-800 text-sm bg-transparent border-b border-dashed border-slate-300 focus:border-brand-500 outline-none flex-1 min-w-0" />' +
-                    '</div>' +
-                    '<div class="flex items-center gap-2 shrink-0">' +
-                        '<span class="item-count text-xs text-slate-400">0 items</span>' +
-                        '<span class="material-symbols-outlined accordion-chevron text-[20px] text-slate-400">expand_more</span>' +
-                    '</div>' +
-                '</summary>' +
-                '<div class="module-body p-4 border-t border-slate-100 space-y-2">' +
-                    '<p class="module-empty text-xs text-slate-400 text-center py-2">No materials yet. Add a video or PDF below.</p>' +
-                    '<div class="module-actions flex gap-2 pt-1">' +
-                        '<label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-brand-50 text-brand-700 rounded-lg border border-brand-100 hover:bg-brand-100 cursor-pointer transition-colors">' +
-                            '<span class="material-symbols-outlined text-[16px]">video_call</span> Add Video' +
-                            '<input type="file" accept="video/*" class="hidden">' +
-                        '</label>' +
-                        '<label class="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 bg-amber-50 text-amber-700 rounded-lg border border-amber-100 hover:bg-amber-100 cursor-pointer transition-colors">' +
-                            '<span class="material-symbols-outlined text-[16px]">upload_file</span> Add PDF' +
-                            '<input type="file" accept="application/pdf" class="hidden">' +
-                        '</label>' +
-                    '</div>' +
-                '</div>';
-
-            const titleInput = d.querySelector('.module-title-input');
-            titleInput.value = 'Module ' + number + ' · New module';
-            // Typing in the title must not toggle the <details>.
-            titleInput.addEventListener('click', function (e) { e.stopPropagation(); });
-            titleInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') { e.preventDefault(); titleInput.blur(); }
-            });
-            return d;
-        }
-
-        // Add Module
-        addModuleBtn.addEventListener('click', function () {
-            const number = container.querySelectorAll('details.module').length + 1;
-            const mod = makeModule(number);
-            container.insertBefore(mod, addModuleBtn); // keep the button last
-            updateModuleTotal();
-            const input = mod.querySelector('.module-title-input');
-            input.focus();
-            input.select();
-            mod.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-
-        // Add Video / Add PDF (delegated so it works on new modules too)
-        modal.addEventListener('change', function (e) {
-            const input = e.target.closest('input[type="file"]');
-            if (!input) return;
-            const moduleEl = input.closest('details.module');
-            if (!moduleEl) return;
-            const isVideo = (input.getAttribute('accept') || '').indexOf('video') !== -1;
-            const actions = moduleEl.querySelector('.module-actions');
-            Array.prototype.forEach.call(input.files, function (file) {
-                actions.insertAdjacentElement('beforebegin', makeItem(file.name, isVideo));
-            });
-            input.value = ''; // allow re-picking the same file
-            updateCount(moduleEl);
-        });
-
-        // Remove an item (delegated)
-        modal.addEventListener('click', function (e) {
-            const btn = e.target.closest('.remove-item');
-            if (!btn) return;
-            const moduleEl = btn.closest('details.module');
-            const row = btn.closest('.module-item');
-            if (row) row.remove();
-            if (moduleEl) updateCount(moduleEl);
-        });
-
-        // Initial sync of counts / empty states on load
-        Array.prototype.forEach.call(container.querySelectorAll('details.module'), updateCount);
-        updateModuleTotal();
-    })();
-    </script>
-
     <script th:inline="javascript">
         window.base = /*[[${apiBaseUrl}]]*/ "";
     </script>
     <script th:src="@{/js/trainer.js}"></script>
+    <script th:src="@{/js/toast.js}"></script>
 </body>
 </html>

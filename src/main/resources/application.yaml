@@ -8,6 +8,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 server:
   servlet:
@@ -20,3 +24,4 @@ app:
   jwt:
     secret: 4sHWaZkvUMig2+ecltlsY9pS7qirYJKGTuFDvLv+oDI=
     expiration-ms: 3600000 # 1 hour in milliseconds
+  

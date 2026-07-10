@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.alpro.physio.dto.CourseDTO;
 import com.alpro.physio.dto.EnrollCourseDTO;
 
 @Repository
@@ -41,4 +42,28 @@ public class EnrollCourseDAO {
       String sql = "UPDATE enroll_course SET attendance_status = ? WHERE user_id = ? AND course_id = ?";
       return jdbcTemplate.update(sql, attendanceStatus, userId, courseId);
     }
+
+    public List<CourseDTO> findCoursesNotEnrolledByUser(String userId) {
+      String sql = "SELECT c.id, c.course_name, c.staff_id, c.course_date, "
+                + "c.course_start_time, c.course_end_time, c.course_price, c.status "
+                + "FROM course c "
+                + "WHERE NOT EXISTS ("
+                + "    SELECT 1 FROM enroll_course ec "
+                + "    WHERE ec.course_id = c.id AND ec.user_id = ?"
+                + ") "
+                + "ORDER BY c.course_date ASC";
+
+      return jdbcTemplate.query(sql, (rs, rowNum) -> {
+          CourseDTO course = new CourseDTO();
+          course.setId(rs.getInt("id"));
+          course.setCourseName(rs.getString("course_name"));
+          course.setStaffId(rs.getString("staff_id"));
+          course.setCourseDate(rs.getObject("course_date", java.time.LocalDate.class));
+          course.setCourseStartTime(rs.getObject("course_start_time", java.time.LocalTime.class));
+          course.setCourseEndTime(rs.getObject("course_end_time", java.time.LocalTime.class));
+          course.setCoursePrice(rs.getBigDecimal("course_price"));
+          course.setStatus(rs.getInt("status"));
+          return course;
+      }, userId);
+  }
 }

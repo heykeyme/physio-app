@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Uploaded video and PDF files
+/src/main/resources/static/video/
+/src/main/resources/static/pdf/

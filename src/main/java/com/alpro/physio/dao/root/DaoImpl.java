@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alpro.physio.dao.UserDAO;
+import com.alpro.physio.dao.VideoDAO;
 import com.alpro.physio.dao.CourseDAO;
 import com.alpro.physio.dao.CourseFeedbackDAO;
 import com.alpro.physio.dao.EnrollCourseDAO;
 import com.alpro.physio.dao.MasterRoleDAO;
 import com.alpro.physio.dao.ModuleDAO;
+import com.alpro.physio.dao.UploadPdfDAO;
 
 @Component
 public class DaoImpl implements Dao {
@@ -30,6 +32,12 @@ public class DaoImpl implements Dao {
 
     @Autowired
     MasterRoleDAO masterRoleDAO;
+
+    @Autowired
+    VideoDAO videoDAO;
+
+    @Autowired
+    UploadPdfDAO uploadPdfDAO;
 
     public UserDAO userDAO() {
         return userDAO;
@@ -53,5 +61,13 @@ public class DaoImpl implements Dao {
 
     public MasterRoleDAO masterRoleDAO(){
         return masterRoleDAO;
+    }
+
+    public VideoDAO videoDAO(){
+        return videoDAO;
+    }
+
+    public UploadPdfDAO uploadPdfDAO(){
+        return uploadPdfDAO;
     }
 }

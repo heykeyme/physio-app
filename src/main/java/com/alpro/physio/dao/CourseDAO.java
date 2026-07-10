@@ -64,4 +64,9 @@ public class CourseDAO {
         String sql = "SELECT * FROM course WHERE staff_id = ?";
         return jdbcTemplate.query(sql, new Object[]{trainerId}, new BeanPropertyRowMapper<>(CourseDTO.class));
     }
+
+    public List<CourseDTO> findWeeklyScheduleByStaffId(String staffId, LocalDate startDate, LocalDate endDate) {
+        String sql = "SELECT * FROM course WHERE staff_id = ? AND course_date BETWEEN ? AND ? " + "ORDER BY course_date ASC, course_start_time ASC";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(CourseDTO.class), staffId, startDate, endDate);
+    }
 }
