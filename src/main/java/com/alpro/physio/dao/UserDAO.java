@@ -35,6 +35,17 @@ public class UserDAO {
         jdbcTemplate.update(sql, userId, email, fullname, password, 1, 3);
     }
 
+    // Admin usage to register staff
+    public void registerStaff(String email, String fullname, String hashedPassword, int roleId) {
+        String userId = LETTERS.charAt(RANDOM.nextInt(26)) + ""
+                    + LETTERS.charAt(RANDOM.nextInt(26))
+                    + LETTERS.charAt(RANDOM.nextInt(26))
+                    + String.format("%06d", RANDOM.nextInt(1_000_000));
+
+        String sql = "INSERT INTO `user` (user_id, email, fullname, password, status, role_id) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, userId, email, fullname, hashedPassword, 1, roleId);
+    }
+
     public UserDTO findByEmail(String email) {
         String sql = "SELECT id, user_id, email, fullname, password, status, role_id FROM `user` WHERE email = ?";
 
@@ -75,31 +86,65 @@ public class UserDAO {
     }
 
     public List<UserDTO> findAllUsers(int page) {
-    int pageSize = 10;
-    int offset = (page - 1) * pageSize; // assumes page is 1-indexed
+        int pageSize = 10;
+        int offset = (page - 1) * pageSize; // assumes page is 1-indexed
 
-    String sql = "SELECT id, user_id, email, fullname, password, status, role_id "
+        String sql = "SELECT id, user_id, email, fullname, password, status, role_id "
                + "FROM `user` ORDER BY id ASC LIMIT ? OFFSET ?";
 
-    return jdbcTemplate.query(sql, (rs, rowNum) -> {
-        UserDTO user = new UserDTO();
-        user.setId(rs.getInt("id"));
-        user.setUserId(rs.getString("user_id"));
-        user.setEmail(rs.getString("email"));
-        user.setFullname(rs.getString("fullname"));
-        user.setPassword(rs.getString("password"));
-        user.setStatus(rs.getInt("status"));
-        user.setRoleId(rs.getInt("role_id"));
-        return user;
-    }, pageSize, offset);
-}
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            UserDTO user = new UserDTO();
+            user.setId(rs.getInt("id"));
+            user.setUserId(rs.getString("user_id"));
+            user.setEmail(rs.getString("email"));
+            user.setFullname(rs.getString("fullname"));
+            user.setPassword(rs.getString("password"));
+            user.setStatus(rs.getInt("status"));
+            user.setRoleId(rs.getInt("role_id"));
+            return user;
+        }, pageSize, offset);
+    }
 
-/**
- * Returns total user count, needed by the controller to calculate total pages.
- */
-public int countAllUsers() {
-    String sql = "SELECT COUNT(*) FROM `user`";
-    Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
-    return count != null ? count : 0;
-}
+    /**
+     * Returns total user count, needed by the controller to calculate total pages.
+     */
+        public int countAllUsers() {
+            String sql = "SELECT COUNT(*) FROM `user`";
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+            return count != null ? count : 0;
+        }
+
+        public Integer changeStatusUser(Integer id, Integer status) {
+            String sql = "UPDATE `user` SET status = ? WHERE id = ?";
+            return jdbcTemplate.update(sql, status, id);
+        }
+
+        public List<UserDTO> searchUserByFullname(String fullname, int page) {
+        int pageSize = 10;
+        int offset = (page - 1) * pageSize; // assumes page is 1-indexed
+
+        String sql = "SELECT id, user_id, email, fullname, password, status, role_id "
+                + "FROM `user` WHERE fullname LIKE ? ORDER BY id ASC LIMIT ? OFFSET ?";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            UserDTO user = new UserDTO();
+            user.setId(rs.getInt("id"));
+            user.setUserId(rs.getString("user_id"));
+            user.setEmail(rs.getString("email"));
+            user.setFullname(rs.getString("fullname"));
+            user.setPassword(rs.getString("password"));
+            user.setStatus(rs.getInt("status"));
+            user.setRoleId(rs.getInt("role_id"));
+            return user;
+        }, "%" + fullname + "%", pageSize, offset);
+    }
+
+    /**
+     * Returns total matching count for the search term, needed for pagination metadata.
+     */
+    public int countSearchUserByFullname(String fullname) {
+        String sql = "SELECT COUNT(*) FROM `user` WHERE fullname LIKE ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, "%" + fullname + "%");
+        return count != null ? count : 0;
+    }
 }

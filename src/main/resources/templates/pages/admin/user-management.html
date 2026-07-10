@@ -2,8 +2,91 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 class="text-2xl font-bold text-slate-800">User Management</h1>
         <div class="flex gap-2">
-            <input type="text" placeholder="Search users..." class="border border-slate-200 rounded-lg px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-brand-100">
-            <button class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700">Add User</button>
+            <input type="text" id="userSearchInput" placeholder="Search users..." class="border border-slate-200 rounded-lg px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-brand-100">
+            <input type="checkbox" id="register-staff-modal-toggle" class="hidden peer" />
+            <label for="register-staff-modal-toggle" class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 cursor-pointer inline-flex items-center">
+                Add User
+            </label>
+
+            <div class="fixed inset-0 z-50 hidden peer-checked:flex items-center justify-center p-4 bg-on-background/40 backdrop-blur-sm">
+                <label for="register-staff-modal-toggle" class="fixed inset-0 w-full h-full cursor-default"></label>
+
+                <div class="relative bg-white rounded-2xl shadow-xl border border-slate-200 max-w-lg w-full overflow-hidden z-10">
+                    <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center border border-brand-100">
+                                <span class="material-symbols-outlined text-[20px]">person_add</span>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-slate-800">Register Staff</h2>
+                                <p class="text-xs text-slate-500">Create an internal staff account</p>
+                            </div>
+                        </div>
+                        <label for="register-staff-modal-toggle" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 p-1.5 rounded-lg transition-colors cursor-pointer inline-flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">close</span>
+                        </label>
+                    </div>
+
+                    <form id="registerStaffForm" class="divide-y divide-slate-100">
+                        <div class="p-6 space-y-4">
+
+                            <div>
+                                <label for="staffFullname" class="block text-sm font-semibold text-slate-800 mb-1">Full Name <span class="text-error">*</span></label>
+                                <input type="text" id="staffFullname" name="fullname" required
+                                    placeholder="e.g., Ahmad Farid"
+                                    class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white shadow-sm transition-all" />
+                            </div>
+
+                            <div>
+                                <label for="staffEmail" class="block text-sm font-semibold text-slate-800 mb-1">Email <span class="text-error">*</span></label>
+                                <input type="email" id="staffEmail" name="email" required
+                                    placeholder="e.g., ahmad.farid@example.com"
+                                    class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white shadow-sm transition-all" />
+                            </div>
+
+                            <div>
+                                <label for="staffPassword" class="block text-sm font-semibold text-slate-800 mb-1">Password <span class="text-error">*</span></label>
+                                <input type="password" id="staffPassword" name="password" required minlength="8"
+                                    placeholder="Minimum 8 characters"
+                                    class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white shadow-sm transition-all" />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-800 mb-2">
+                                    Role <span class="text-error">*</span>
+                                </label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <label class="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-slate-50 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                                        <input type="radio" name="roleId" value="1" required class="accent-brand-600" />
+                                        Admin
+                                    </label>
+                                    <label class="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-slate-50 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                                        <input type="radio" name="roleId" value="2" required class="accent-brand-600" />
+                                        Management
+                                    </label>
+                                    <label class="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-slate-50 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                                        <input type="radio" name="roleId" value="4" required class="accent-brand-600" />
+                                        Trainer
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="px-6 py-4 bg-slate-50 flex items-center justify-end gap-3">
+                            <label for="register-staff-modal-toggle"
+                                class="px-4 py-2 border border-slate-200 bg-white text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-100 hover:text-slate-800 transition-colors shadow-sm cursor-pointer inline-flex items-center justify-center">
+                                Cancel
+                            </label>
+                            <button type="submit" id="createStaffBtn"
+                                    class="flex items-center gap-2 px-5 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors shadow-sm">
+                                <span class="material-symbols-outlined text-[18px]">save</span>
+                                <span>Create Staff</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -26,7 +109,6 @@
         </div>
     </div>
 
-    <!-- Pagination controls -->
     <div id="userPagination" class="flex items-center justify-between text-sm text-slate-600">
         <!-- injected by JS -->
     </div>

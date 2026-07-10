@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadCourses(userToken); 
         loadFeedback(userToken);
         loadUsers(userToken);
+        setupRegisterStaffFormSubmission(userToken);
+        setupUserSearch(userToken);
     } else {
         console.warn('No authorization token found. Redirecting to login...');
         showToast('Your session has expired or you are not logged in. Please log in again.');
@@ -515,12 +517,15 @@ function formatFeedbackDate(dateStr) {
 }
 
 let currentUserPage = 1;
+let currentSearchTerm = '';
+let searchDebounceTimer = null;
 
 /**
- * Fetches a page of users from the API and renders the table + pagination.
+ * Fetches a page of users (optionally filtered by fullname) and renders the table + pagination.
+ * Routes through /search since that endpoint already falls back to the full list when blank.
  */
-async function loadUsers(token, page = 1) {
-    const endpoint = `${window.base}/physio/admin/manage-users/list?page=${page}`;
+async function loadUsers(token, page = 1, searchTerm = '') {
+    const endpoint = `${window.base}/physio/admin/manage-users/search?fullname=${encodeURIComponent(searchTerm)}&page=${page}`;
     const tbody = document.getElementById('userListBody');
     const paginationContainer = document.getElementById('userPagination');
 
@@ -547,6 +552,7 @@ async function loadUsers(token, page = 1) {
         if (result.status === 'success' && Array.isArray(result.data)) {
             tbody.innerHTML = '';
             currentUserPage = result.currentPage ?? page;
+            currentSearchTerm = searchTerm;
 
             if (result.data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-slate-500">No users found.</td></tr>`;
@@ -567,6 +573,29 @@ async function loadUsers(token, page = 1) {
         console.error('Failed to fetch users:', error);
         tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-rose-600">Failed to load users.</td></tr>`;
     }
+}
+
+/**
+ * Wires up the search input with debounce — fires the API call
+ * only after the user stops typing for 500ms.
+ */
+function setupUserSearch(token) {
+    const searchInput = document.getElementById('userSearchInput');
+
+    if (!searchInput) {
+        console.warn('Search input (#userSearchInput) not found in DOM.');
+        return;
+    }
+
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchDebounceTimer);
+
+        searchDebounceTimer = setTimeout(() => {
+            const term = searchInput.value.trim();
+            const currentToken = sessionStorage.getItem('token') || token;
+            loadUsers(currentToken, 1, term); // reset to page 1 on every new search
+        }, 500);
+    });
 }
 
 /**
@@ -600,10 +629,23 @@ function buildUserRow(user) {
         </td>
     `;
 
-    // Action button handler not wired yet — endpoint not provided.
     const actionBtn = row.querySelector('[data-action-btn]');
-    actionBtn.addEventListener('click', () => {
-        console.warn('Deactivate/Activate endpoint not yet configured for user id:', user.id);
+    actionBtn.addEventListener('click', async () => {
+        const token = sessionStorage.getItem('token');
+        const newStatus = isActive ? 0 : 1;
+
+        actionBtn.disabled = true;
+        const originalText = actionBtn.textContent;
+        actionBtn.textContent = 'Updating...';
+
+        const success = await changeUserStatus(user.id, newStatus, token);
+
+        if (success) {
+            loadUsers(token, currentUserPage); // refresh current page to reflect new status
+        } else {
+            actionBtn.disabled = false;
+            actionBtn.textContent = originalText;
+        }
     });
 
     return row;
@@ -637,7 +679,7 @@ function renderPagination(container, currentPage, totalPages, token) {
     container.innerHTML = '';
 
     if (!totalPages || totalPages <= 1) {
-        return; // no pagination needed for a single page
+        return;
     }
 
     const info = document.createElement('span');
@@ -651,15 +693,117 @@ function renderPagination(container, currentPage, totalPages, token) {
     prevBtn.textContent = 'Previous';
     prevBtn.className = 'px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed';
     prevBtn.disabled = currentPage <= 1;
-    prevBtn.addEventListener('click', () => loadUsers(token, currentPage - 1));
+    prevBtn.addEventListener('click', () => loadUsers(token, currentPage - 1, currentSearchTerm));
 
     const nextBtn = document.createElement('button');
     nextBtn.textContent = 'Next';
     nextBtn.className = 'px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed';
     nextBtn.disabled = currentPage >= totalPages;
-    nextBtn.addEventListener('click', () => loadUsers(token, currentPage + 1));
+    nextBtn.addEventListener('click', () => loadUsers(token, currentPage + 1, currentSearchTerm));
 
     controls.appendChild(prevBtn);
     controls.appendChild(nextBtn);
     container.appendChild(controls);
+}
+
+/**
+ * Toggles a user's active/inactive status via PATCH.
+ */
+async function changeUserStatus(id, newStatus, token) {
+    const endpoint = `${window.base}/physio/admin/manage-users/change-status?id=${id}&status=${newStatus}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.status === 'success') {
+            showToast('User status updated successfully.', 'success');
+            return true;
+        } else {
+            showToast(result.message || 'Failed to update user status.', 'error');
+            return false;
+        }
+
+    } catch (error) {
+        console.error('Error changing user status:', error);
+        showToast('Failed to update user status.', 'error');
+        return false;
+    }
+}
+
+/**
+ * Handles Register Staff Form Submission via Fetch (JSON payload).
+ */
+function setupRegisterStaffFormSubmission(token) {
+    const form = document.getElementById('registerStaffForm');
+    const createBtn = document.getElementById('createStaffBtn');
+
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const originalBtnText = createBtn.innerHTML;
+        createBtn.disabled = true;
+        createBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Creating...`;
+
+        try {
+            const selectedRole = form.querySelector('input[name="roleId"]:checked');
+
+            if (!selectedRole) {
+                showToast('Please select a role.', 'error');
+                return;
+            }
+
+            const payload = {
+                fullname: document.getElementById('staffFullname').value.trim(),
+                email: document.getElementById('staffEmail').value.trim(),
+                password: document.getElementById('staffPassword').value,
+                roleId: parseInt(selectedRole.value, 10)
+            };
+
+            const currentToken = sessionStorage.getItem('token') || token;
+            const endpoint = `${window.base}/physio/admin/manage-users/register`;
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${currentToken}`,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                showToast('Staff account created successfully!', 'success');
+                form.reset();
+
+                const modalToggle = document.getElementById('register-staff-modal-toggle');
+                if (modalToggle) modalToggle.checked = false;
+
+                loadUsers(currentToken, currentUserPage); // refresh list to show new staff member
+
+            } else {
+                showToast(result.message || 'Failed to create staff account.', 'error');
+            }
+
+        } catch (error) {
+            console.error('Error creating staff account:', error);
+            showToast('Failed to create staff account.', 'error');
+        } finally {
+            createBtn.disabled = false;
+            createBtn.innerHTML = originalBtnText;
+        }
+    });
 }
