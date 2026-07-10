@@ -57,13 +57,13 @@ public class AdminSearchUsersController {
             int totalUsers;
 
             if (hasSearchTerm) {
-                logger.info("Searching users by fullname: '{}', page: {}", fullname, page);
-                users = dao.userDAO().searchUserByFullname(fullname, page);
-                totalUsers = dao.userDAO().countSearchUserByFullname(fullname);
+                logger.info("Searching participants/trainers by fullname: '{}', page: {}", fullname, page);
+                users = dao.userDAO().searchParticipantsAndTrainersByFullname(fullname, page);
+                totalUsers = dao.userDAO().countSearchParticipantsAndTrainersByFullname(fullname);
             } else {
-                logger.info("No search term provided, returning full list, page: {}", page);
-                users = dao.userDAO().findAllUsers(page);
-                totalUsers = dao.userDAO().countAllUsers();
+                logger.info("No search term provided, returning participants/trainers list, page: {}", page);
+                users = dao.userDAO().findParticipantsAndTrainers(page);
+                totalUsers = dao.userDAO().countParticipantsAndTrainers();
             }
 
             int totalPages = (int) Math.ceil((double) totalUsers / 10);

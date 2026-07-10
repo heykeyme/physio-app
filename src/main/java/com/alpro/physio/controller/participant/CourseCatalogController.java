@@ -66,6 +66,10 @@ public class CourseCatalogController {
                         courseData.put("courseStartTime", course.getCourseStartTime());
                         courseData.put("courseEndTime", course.getCourseEndTime());
                         courseData.put("coursePrice", course.getCoursePrice());
+                        
+                        Integer totalModule = dao.moduleDAO().findTotalModuleByCourseId(course.getId());
+                        courseData.put("totalModule", totalModule);
+
                         courseList.add(courseData);
                     }
                 }

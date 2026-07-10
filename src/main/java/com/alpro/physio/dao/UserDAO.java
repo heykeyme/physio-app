@@ -76,7 +76,7 @@ public class UserDAO {
     }
 
     public UserDTO findByUserId(String userId) {
-        String sql = "SELECT fullname FROM `user` WHERE user_id = ?";
+        String sql = "SELECT id, user_id, email, fullname, status, role_id FROM `user` WHERE user_id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(UserDTO.class), userId);
     }
 
@@ -103,6 +103,32 @@ public class UserDAO {
             user.setRoleId(rs.getInt("role_id"));
             return user;
         }, pageSize, offset);
+    }
+
+    public List<UserDTO> findParticipantsAndTrainers(int page) {
+        int pageSize = 10;
+        int offset = (page - 1) * pageSize; // assumes page is 1-indexed
+
+        String sql = "SELECT id, user_id, email, fullname, password, status, role_id "
+                + "FROM `user` WHERE role_id IN (3, 4) ORDER BY id ASC LIMIT ? OFFSET ?";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            UserDTO user = new UserDTO();
+            user.setId(rs.getInt("id"));
+            user.setUserId(rs.getString("user_id"));
+            user.setEmail(rs.getString("email"));
+            user.setFullname(rs.getString("fullname"));
+            user.setPassword(rs.getString("password"));
+            user.setStatus(rs.getInt("status"));
+            user.setRoleId(rs.getInt("role_id"));
+            return user;
+        }, pageSize, offset);
+    }
+
+    public int countParticipantsAndTrainers() {
+        String sql = "SELECT COUNT(*) FROM `user` WHERE role_id IN (3, 4)";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        return count != null ? count : 0;
     }
 
     /**
@@ -144,6 +170,32 @@ public class UserDAO {
      */
     public int countSearchUserByFullname(String fullname) {
         String sql = "SELECT COUNT(*) FROM `user` WHERE fullname LIKE ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, "%" + fullname + "%");
+        return count != null ? count : 0;
+    }
+
+    public List<UserDTO> searchParticipantsAndTrainersByFullname(String fullname, int page) {
+        int pageSize = 10;
+        int offset = (page - 1) * pageSize;
+
+        String sql = "SELECT id, user_id, email, fullname, password, status, role_id "
+                + "FROM `user` WHERE fullname LIKE ? AND role_id IN (3, 4) ORDER BY id ASC LIMIT ? OFFSET ?";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            UserDTO user = new UserDTO();
+            user.setId(rs.getInt("id"));
+            user.setUserId(rs.getString("user_id"));
+            user.setEmail(rs.getString("email"));
+            user.setFullname(rs.getString("fullname"));
+            user.setPassword(rs.getString("password"));
+            user.setStatus(rs.getInt("status"));
+            user.setRoleId(rs.getInt("role_id"));
+            return user;
+        }, "%" + fullname + "%", pageSize, offset);
+    }
+
+    public int countSearchParticipantsAndTrainersByFullname(String fullname) {
+        String sql = "SELECT COUNT(*) FROM `user` WHERE fullname LIKE ? AND role_id IN (3, 4)";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, "%" + fullname + "%");
         return count != null ? count : 0;
     }

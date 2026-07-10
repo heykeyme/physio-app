@@ -99,6 +99,12 @@
         #manage-modal details > summary::-webkit-details-marker { display: none; }
         #manage-modal .accordion-chevron { transition: transform 150ms ease; }
         #manage-modal details[open] .accordion-chevron { transform: rotate(180deg); }
+
+        #content-manage-assessment { display: none; }
+        #content-manage-assessment.active { display: block; }
+
+        #content-manage-questions { display: none; }
+        #content-manage-questions.active { display: block; }
     </style>
 </head>
 
@@ -107,7 +113,7 @@
     <input id="page-dashboard" name="page" type="radio" checked/>
     <input id="page-classes" name="page" type="radio"/>
     <input id="page-schedule" name="page" type="radio"/>
-    <input id="page-materials" name="page" type="radio"/>
+    <!-- <input id="page-materials" name="page" type="radio"/> -->
     <!-- Attendance is now a modal toggle, not a page. Kept as a standalone checkbox
          so it overlays the current page instead of replacing it. -->
     <input id="page-attendance" type="checkbox"/>
@@ -205,7 +211,47 @@
                 <div th:replace="~{pages/trainers/schedule.html}"></div>
 
                 <div th:replace="~{pages/trainers/assessment.html}"></div>
+
+                <section id="content-manage-assessment" class="space-y-6">
+                    <button id="backToAssessmentsBtn" type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-700 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        Back to Assessments
+                    </button>
+
+                    <div>
+                        <h1 id="manageAssessmentCourseName" class="text-2xl font-bold text-slate-800">Loading...</h1>
+                        <p class="text-sm text-slate-500 mt-1">Create and manage assessments for this class.</p>
+                    </div>
+
+                    <div id="assessmentListContainer" class="space-y-3 max-w-3xl">
+                        <!-- assessments injected by JS -->
+                    </div>
+
+                    <button id="addAssessmentBtn" type="button" class="w-full max-w-3xl flex items-center justify-center gap-1.5 text-sm font-semibold px-4 py-2.5 border border-dashed border-slate-300 text-slate-500 rounded-lg hover:border-brand-400 hover:text-brand-700 hover:bg-brand-50 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">add</span> New Assessment
+                    </button>
+                </section>
                 
+                <section id="content-manage-questions" class="space-y-6">
+                    <button id="backToManageAssessmentBtn" type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-700 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        Back to Assessment
+                    </button>
+
+                    <div>
+                        <h1 id="manageQuestionsAssessmentTitle" class="text-2xl font-bold text-slate-800">Loading...</h1>
+                        <p class="text-sm text-slate-500 mt-1">Create questions and set the correct answer.</p>
+                    </div>
+
+                    <div id="questionListContainer" class="space-y-3 max-w-3xl">
+                        <!-- questions injected by JS -->
+                    </div>
+
+                    <button id="addQuestionBtn" type="button" class="w-full max-w-3xl flex items-center justify-center gap-1.5 text-sm font-semibold px-4 py-2.5 border border-dashed border-slate-300 text-slate-500 rounded-lg hover:border-brand-400 hover:text-brand-700 hover:bg-brand-50 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">add</span> New Question
+                    </button>
+                </section>
+
                 <section id="content-feedback" class="page-content space-y-6">
                     <div>
                         <h1 class="text-2xl font-bold text-slate-800">Student Feedback</h1>
@@ -246,10 +292,10 @@
                 <span class="material-symbols-outlined text-[24px]">event_note</span>
                 <span class="text-[10px] font-semibold mt-0.5">Schedule</span>
             </label>
-            <label for="page-materials" class="mob-nav-materials flex flex-col items-center justify-center text-on-surface-variant rounded-xl px-3 py-1 cursor-pointer transition-colors scale-95 duration-100">
+            <!-- <label for="page-materials" class="mob-nav-materials flex flex-col items-center justify-center text-on-surface-variant rounded-xl px-3 py-1 cursor-pointer transition-colors scale-95 duration-100">
                 <span class="material-symbols-outlined text-[24px]">source</span>
                 <span class="text-[10px] font-semibold mt-0.5">Materials</span>
-            </label>
+            </label> -->
             <label for="page-assessments" class="mob-nav-assessments flex flex-col items-center justify-center text-on-surface-variant rounded-xl px-3 py-1 cursor-pointer transition-colors scale-95 duration-100">
                 <span class="material-symbols-outlined text-[24px]">grading</span>
                 <span class="text-[10px] font-semibold mt-0.5">Assess</span>
@@ -505,6 +551,52 @@
                 <button class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Save changes</button>
             </div>
 
+        </div>
+    </div>
+
+    <div id="question-create-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
+        <div id="question-create-modal-backdrop" class="absolute inset-0 bg-slate-900/40"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-xl shadow-lg border border-slate-200 flex flex-col max-h-[85vh]">
+            <div class="flex items-start justify-between p-5 border-b border-slate-100">
+                <div>
+                    <p class="text-xs font-semibold text-brand-700 uppercase tracking-wide">New Question</p>
+                    <h3 class="font-bold text-slate-800 text-lg mt-0.5">Add a multiple-choice question</h3>
+                </div>
+                <button type="button" id="closeQuestionCreateModalBtn" class="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            <div class="p-5 overflow-y-auto flex-1 space-y-4">
+                <div>
+                    <label for="questionTextInput" class="block text-sm font-semibold text-slate-800 mb-1">Question <span class="text-error">*</span></label>
+                    <textarea id="questionTextInput" rows="2" placeholder="e.g., Which muscle group is primarily targeted by a squat?"
+                        class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"></textarea>
+                </div>
+                <div class="space-y-2">
+                    <p class="block text-sm font-semibold text-slate-800">Options <span class="text-error">*</span></p>
+                    <div id="optionInputsContainer" class="space-y-2"></div>
+                    <p class="text-xs text-slate-400">Select the radio button next to the correct answer.</p>
+                </div>
+            </div>
+            <div class="flex gap-2 p-5 border-t border-slate-100">
+                <button type="button" id="cancelQuestionCreateBtn" class="flex-1 text-center text-sm font-semibold px-4 py-2 bg-slate-50 text-slate-600 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors border border-slate-200">Cancel</button>
+                <button type="button" id="saveQuestionBtn" class="flex-1 text-sm font-semibold px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors border border-brand-100">Save question</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessment name prompt modal — same pattern as the module name prompt -->
+    <div id="assessment-name-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
+        <div id="assessment-name-modal-backdrop" class="absolute inset-0 bg-slate-900/40"></div>
+        <div class="relative bg-white w-full max-w-sm rounded-xl shadow-lg border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-800 text-base mb-1">New Assessment</h3>
+            <p class="text-xs text-slate-500 mb-3">Enter a title for the new assessment.</p>
+            <input type="text" id="assessmentNameInput" placeholder="e.g., Quiz 1 - Manual Therapy"
+                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none mb-4" />
+            <div class="flex gap-2 justify-end">
+                <button type="button" id="assessmentNameCancelBtn" class="px-4 py-2 border border-slate-200 bg-white text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-100 transition-colors">Cancel</button>
+                <button type="button" id="assessmentNameConfirmBtn" class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors">Create</button>
+            </div>
         </div>
     </div>
 

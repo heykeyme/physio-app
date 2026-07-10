@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * Fetches the trainer's classes and renders them into #classListContainer.
  */
 async function loadMyClasses(token) {
-    const endpoint = `${window.base}/physio/trainer/classes/list`; // confirm this matches your actual endpoint
+    const endpoint = `${window.base}/physio/trainer/classes/list`;
     const containerElement = document.getElementById('classListContainer');
 
     if (!containerElement) {
@@ -75,8 +75,6 @@ async function loadMyClasses(token) {
 
 /**
  * Builds a single class card element.
- * Expects a course object shaped like:
- * { courseId, courseName, courseStatus, totalModule, totalParticipant }
  */
 function buildClassCard(course) {
     const card = document.createElement('div');
@@ -123,21 +121,8 @@ function buildClassCard(course) {
     return card;
 }
 
-/* ============================================
-   MANAGE COURSE MODAL
-   ============================================ */
-
 let currentManageCourseId = null;
 
-/**
- * Opens the manage-course modal for a given course.
- * Same checkbox-driven CSS pattern as the attendance modal
- * (#manage-course:checked ~ #manage-modal in trainer.html).
- *
- * NOTE: the module list inside this modal is still static demo content —
- * no endpoint has been provided yet to fetch a specific course's real
- * modules/materials, so only the title updates for now.
- */
 function openManageModal(courseId, courseName, token) {
     const toggle = document.getElementById('manage-course');
     const titleEl = document.getElementById('manageCourseName');
@@ -155,28 +140,17 @@ function openManageModal(courseId, courseName, token) {
     loadModulesForCourse(courseId, token);
 }
 
-/**
- * Hides the manage-course modal.
- */
 function closeManageModal() {
     const toggle = document.getElementById('manage-course');
     if (toggle) toggle.checked = false;
     currentManageCourseId = null;
 }
 
-/**
- * Extracts just the filename from a filepath, handling both
- * forward slashes and Windows backslashes.
- */
 function getBasename(filepath) {
     if (!filepath) return '';
     return filepath.split(/[/\\]/).pop();
 }
 
-/**
- * Fetches real modules (with nested videos/pdfs) for a course and
- * renders them into #modules-container, replacing all static demo content.
- */
 async function loadModulesForCourse(courseId, token) {
     const endpoint = `${window.base}/physio/trainer/classes/manage/modules?courseId=${courseId}`;
     const container = document.getElementById('modules-container');
@@ -187,7 +161,6 @@ async function loadModulesForCourse(courseId, token) {
         return;
     }
 
-    // Clear everything except the Add Module button, which must stay last
     const addModuleBtn = document.getElementById('add-module-btn');
     container.innerHTML = '<p class="text-sm text-slate-500">Loading modules...</p>';
 
@@ -228,13 +201,9 @@ async function loadModulesForCourse(courseId, token) {
         container.innerHTML = `<p class="text-sm text-rose-600">Failed to load modules.</p>`;
     }
 
-    // Re-append the Add Module button so it stays at the bottom
     if (addModuleBtn) container.appendChild(addModuleBtn);
 }
 
-/**
- * Builds a single module <details> element with its real videos/pdfs.
- */
 function buildModuleElement(module, displayNumber, token) {
     const totalItems = (module.videos?.length ?? 0) + (module.pdfs?.length ?? 0);
 
@@ -287,8 +256,6 @@ function buildModuleElement(module, displayNumber, token) {
         );
     });
 
-    // Wire the delete-module button. stopPropagation prevents the click
-    // from also toggling the <details> open/closed via the <summary>.
     const deleteModuleBtn = details.querySelector('.delete-module-btn');
     deleteModuleBtn.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -305,20 +272,18 @@ function buildModuleElement(module, displayNumber, token) {
         }
     });
 
-    // Wire the file inputs for real upload
     const fileInputs = details.querySelectorAll('input[type="file"]');
     fileInputs.forEach(input => {
         input.addEventListener('change', async () => {
             const file = input.files[0];
             if (!file) return;
 
-            const uploadType = input.dataset.uploadType; // 'video' or 'pdf'
+            const uploadType = input.dataset.uploadType;
             const currentToken = sessionStorage.getItem('token') || token;
 
             await uploadMaterial(module.moduleId, uploadType, file, currentToken);
-            input.value = ''; // allow re-selecting the same file later
+            input.value = '';
 
-            // Refresh the whole module list so counts/items reflect the new upload
             if (currentManageCourseId !== null) {
                 loadModulesForCourse(currentManageCourseId, currentToken);
             }
@@ -328,9 +293,6 @@ function buildModuleElement(module, displayNumber, token) {
     return details;
 }
 
-/**
- * Builds a single video/PDF row, wired to the real delete endpoints.
- */
 function buildMaterialItem(id, displayName, storedFilename, isVideo, courseId, token) {
     const row = document.createElement('div');
     row.className = 'module-item flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors';
@@ -372,18 +334,13 @@ function buildMaterialItem(id, displayName, storedFilename, isVideo, courseId, t
     return row;
 }
 
-/**
- * Calls the DELETE /video endpoint for a given video id.
- */
 async function deleteVideo(id, token) {
     const endpoint = `${window.base}/physio/trainer/classes/manage/video?id=${id}`;
 
     try {
         const response = await fetch(endpoint, {
             method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
             credentials: 'include'
         });
 
@@ -401,18 +358,13 @@ async function deleteVideo(id, token) {
     }
 }
 
-/**
- * Calls the DELETE /pdf endpoint for a given pdf id.
- */
 async function deletePdf(id, token) {
     const endpoint = `${window.base}/physio/trainer/classes/manage/pdf?id=${id}`;
 
     try {
         const response = await fetch(endpoint, {
             method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
             credentials: 'include'
         });
 
@@ -430,19 +382,13 @@ async function deletePdf(id, token) {
     }
 }
 
-/**
- * Calls the DELETE /module endpoint for a given module id.
- * Deleting a module also deletes its videos/pdfs server-side.
- */
 async function deleteModule(id, token) {
     const endpoint = `${window.base}/physio/trainer/classes/manage/module?id=${id}`;
 
     try {
         const response = await fetch(endpoint, {
             method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
             credentials: 'include'
         });
 
@@ -460,10 +406,6 @@ async function deleteModule(id, token) {
     }
 }
 
-/**
- * Uploads a single video or PDF file for a given module.
- * Hits separate /video and /pdf endpoints (not a combined /add endpoint).
- */
 async function uploadMaterial(moduleId, type, file, token) {
     const endpoint = type === 'video'
         ? `${window.base}/physio/trainer/classes/manage/video`
@@ -476,11 +418,7 @@ async function uploadMaterial(moduleId, type, file, token) {
     try {
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-                // Do NOT set Content-Type manually — the browser sets the
-                // correct multipart/form-data boundary automatically.
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
             credentials: 'include',
             body: formData
         });
@@ -499,10 +437,6 @@ async function uploadMaterial(moduleId, type, file, token) {
     }
 }
 
-/**
- * Shows a custom module-name input modal and resolves with the entered
- * name, or null if the user cancels/dismisses it. Replaces native prompt().
- */
 function promptForModuleName() {
     return new Promise((resolve) => {
         const modal = document.getElementById('module-name-modal');
@@ -557,11 +491,6 @@ function promptForModuleName() {
     });
 }
 
-/**
- * Creates a new module for the currently open course, using a custom
- * modal prompt for the module name instead of native prompt().
- * Hits the separate /module endpoint (not a combined /add endpoint).
- */
 async function createNewModule(courseId, token) {
     const moduleName = await promptForModuleName();
     if (!moduleName) return;
@@ -575,9 +504,7 @@ async function createNewModule(courseId, token) {
     try {
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
             credentials: 'include',
             body: formData
         });
@@ -597,10 +524,8 @@ async function createNewModule(courseId, token) {
     }
 }
 
-// Wire up the Add Module button and modal close controls once DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     const addModuleBtn = document.getElementById('add-module-btn');
-    const closeManageBtn = document.querySelector('label[for="manage-course"]');
 
     if (addModuleBtn) {
         addModuleBtn.addEventListener('click', () => {
@@ -612,18 +537,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ============================================
-   ATTENDANCE MODAL
-   ============================================ */
-
 let currentAttendanceCourseId = null;
 
-/**
- * Opens the attendance modal for a given course and loads its attendee list.
- * Visibility is driven by trainer.html's pure-CSS checkbox toggle
- * (#page-attendance:checked ~ #attendance-modal), so we check the checkbox
- * rather than manipulating classes directly on the modal element.
- */
 function openAttendanceModal(courseId, courseName, token) {
     const toggle = document.getElementById('page-attendance');
     const titleEl = document.getElementById('attendanceCourseName');
@@ -641,18 +556,12 @@ function openAttendanceModal(courseId, courseName, token) {
     loadAttendanceList(courseId, token);
 }
 
-/**
- * Hides the attendance modal by unchecking the CSS toggle checkbox.
- */
 function closeAttendanceModal() {
     const toggle = document.getElementById('page-attendance');
     if (toggle) toggle.checked = false;
     currentAttendanceCourseId = null;
 }
 
-/**
- * Fetches attendees for a course and renders them into #attendanceList.
- */
 async function loadAttendanceList(courseId, token) {
     const endpoint = `${window.base}/physio/trainer/classes/attendance?courseId=${courseId}`;
     const listElement = document.getElementById('attendanceList');
@@ -703,9 +612,6 @@ async function loadAttendanceList(courseId, token) {
     }
 }
 
-/**
- * Builds a single attendee <li> row with a checkbox bound to userId.
- */
 function buildAttendeeRow(attendee) {
     const li = document.createElement('li');
     li.className = 'flex items-center justify-between py-3';
@@ -724,9 +630,6 @@ function buildAttendeeRow(attendee) {
     return li;
 }
 
-/**
- * Collects all attendee checkboxes and submits them as a batch update.
- */
 async function saveAttendance(token) {
     const listElement = document.getElementById('attendanceList');
     const saveBtn = document.getElementById('saveAttendanceBtn');
@@ -756,7 +659,7 @@ async function saveAttendance(token) {
     saveBtn.textContent = 'Saving...';
 
     try {
-        const endpoint = `${window.base}/physio/trainer/classes/attendance/update`; // confirm this matches your actual endpoint
+        const endpoint = `${window.base}/physio/trainer/classes/attendance/update`;
 
         const response = await fetch(endpoint, {
             method: 'POST',
@@ -788,7 +691,6 @@ async function saveAttendance(token) {
     }
 }
 
-// Wire up modal close/save controls once the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.getElementById('closeAttendanceModalBtn');
     const cancelBtn = document.getElementById('cancelAttendanceBtn');
@@ -806,9 +708,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/**
- * Fetches the trainer's weekly schedule and renders it into #scheduleListContainer.
- */
 async function loadWeeklySchedule(token) {
     const endpoint = `${window.base}/physio/trainer/schedule/weekly`;
     const containerElement = document.getElementById('scheduleListContainer');
@@ -859,10 +758,6 @@ async function loadWeeklySchedule(token) {
     }
 }
 
-/**
- * Builds a single schedule card element.
- * Expects an entry shaped like: { courseName, day, date, time }
- */
 function buildScheduleCard(entry, borderColorClass) {
     const card = document.createElement('div');
     card.className = `bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 ${borderColorClass}`;
@@ -880,19 +775,15 @@ function buildScheduleCard(entry, borderColorClass) {
     return card;
 }
 
-/**
- * Fetches the trainer's assigned classes and renders them into
- * #assessmentClassListContainer, each with a Manage Assessment action.
- */
 async function loadAssessmentClasses(token) {
     const endpoint = `${window.base}/physio/trainer/classes/list`;
     const containerElement = document.getElementById('assessmentClassListContainer');
- 
+
     if (!containerElement) {
         console.warn('Assessment class list container (#assessmentClassListContainer) not found in DOM.');
         return;
     }
- 
+
     try {
         const response = await fetch(endpoint, {
             method: 'GET',
@@ -901,53 +792,48 @@ async function loadAssessmentClasses(token) {
                 'Content-Type': 'application/json'
             }
         });
- 
+
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
- 
+
         const result = await response.json();
- 
+
         if (result.status === 'success' && Array.isArray(result.data)) {
             containerElement.innerHTML = '';
- 
+
             if (result.data.length === 0) {
                 containerElement.innerHTML = `<p class="text-sm text-slate-500">No assigned classes found.</p>`;
                 return;
             }
- 
+
             result.data.forEach(course => {
                 const card = buildAssessmentCourseCard(course);
                 containerElement.appendChild(card);
             });
- 
+
         } else {
             console.error('API returned an unexpected structure or error message:', result.message);
             showToast('Failed to load classes.', 'error');
         }
- 
+
     } catch (error) {
         console.error('Failed to fetch classes:', error);
         containerElement.innerHTML = `<p class="text-sm text-rose-600">Failed to load classes.</p>`;
     }
 }
- 
-/**
- * Builds a single course card with a Manage Assessment button.
- * Expects a course object shaped like:
- * { courseId, courseName, courseStatus, totalModule, totalParticipant }
- */
+
 function buildAssessmentCourseCard(course) {
     const isActive = course.courseStatus === 1;
     const statusBadgeClass = isActive
         ? 'bg-green-100 text-green-700'
         : 'bg-rose-100 text-rose-700';
     const statusText = isActive ? 'Active' : 'Inactive';
- 
+
     const card = document.createElement('div');
     card.className = 'bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4';
     card.dataset.courseId = course.courseId;
- 
+
     card.innerHTML = `
         <div>
             <div class="flex items-center gap-2">
@@ -962,20 +848,500 @@ function buildAssessmentCourseCard(course) {
             </p>
         </div>
     `;
- 
+
     const manageBtn = document.createElement('button');
     manageBtn.type = 'button';
     manageBtn.className = 'px-5 py-2 bg-brand-50 text-brand-700 rounded-lg text-sm font-semibold border border-brand-100 hover:bg-brand-100 transition-colors w-full sm:w-auto';
     manageBtn.textContent = 'Manage Assessment';
     manageBtn.addEventListener('click', () => {
-        // TODO: no assessment list/create endpoint exists yet.
-        // Once built, this should open a modal or navigate to a page
-        // showing this course's assessments (courseId available here).
-        console.log('Manage Assessment clicked for courseId:', course.courseId);
-        showToast('Assessment management is not available yet.', 'error');
+        const token = sessionStorage.getItem('token');
+        showAssessmentManagementPage(course.courseId, course.courseName, token);
     });
- 
+
     card.appendChild(manageBtn);
- 
+
     return card;
 }
+
+let currentAssessmentCourseId = null;
+
+function showAssessmentManagementPage(courseId, courseName, token) {
+    const listSection = document.getElementById('content-assessments');
+    const manageSection = document.getElementById('content-manage-assessment');
+    const titleEl = document.getElementById('manageAssessmentCourseName');
+
+    if (!manageSection) {
+        console.warn('Assessment management section (#content-manage-assessment) not found in DOM.');
+        return;
+    }
+
+    currentAssessmentCourseId = courseId;
+    if (titleEl) titleEl.textContent = courseName ?? '';
+
+    if (listSection) listSection.style.display = 'none';
+    manageSection.classList.add('active');
+
+    loadAssessmentsForCourse(courseId, token);
+}
+
+function hideAssessmentManagementPage() {
+    const listSection = document.getElementById('content-assessments');
+    const manageSection = document.getElementById('content-manage-assessment');
+
+    if (manageSection) manageSection.classList.remove('active');
+    if (listSection) listSection.style.display = '';
+
+    currentAssessmentCourseId = null;
+}
+
+async function loadAssessmentsForCourse(courseId, token) {
+    const endpoint = `${window.base}/physio/trainer/assessment/list?courseId=${courseId}`;
+    const container = document.getElementById('assessmentListContainer');
+
+    if (!container) {
+        console.warn('Assessment list container (#assessmentListContainer) not found in DOM.');
+        return;
+    }
+
+    container.innerHTML = `<p class="text-sm text-slate-500">Loading assessments...</p>`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        container.innerHTML = '';
+
+        if (result.status === 'success' && Array.isArray(result.data)) {
+            if (result.data.length === 0) {
+                container.innerHTML = `<p class="text-sm text-slate-500">No assessments yet. Create one below.</p>`;
+                return;
+            }
+
+            result.data.forEach(assessment => {
+                container.appendChild(buildAssessmentItem(assessment));
+            });
+
+        } else {
+            console.error('API returned an unexpected structure or error message:', result.message);
+            showToast('Failed to load assessments.', 'error');
+        }
+
+    } catch (error) {
+        console.error('Failed to fetch assessments:', error);
+        container.innerHTML = `<p class="text-sm text-rose-600">Failed to load assessments.</p>`;
+    }
+}
+
+function buildAssessmentItem(assessment) {
+    const row = document.createElement('div');
+    row.className = 'bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4';
+    row.dataset.assessmentId = assessment.assessmentId;
+
+    row.innerHTML = `
+        <p class="font-bold text-slate-800 text-lg">${assessment.title}</p>
+    `;
+
+    const manageQuestionsBtn = document.createElement('button');
+    manageQuestionsBtn.type = 'button';
+    manageQuestionsBtn.className = 'px-5 py-2 bg-brand-50 text-brand-700 rounded-lg text-sm font-semibold border border-brand-100 hover:bg-brand-100 transition-colors w-full sm:w-auto';
+    manageQuestionsBtn.textContent = 'Manage Questions';
+    manageQuestionsBtn.addEventListener('click', () => {
+        const token = sessionStorage.getItem('token');
+        showManageQuestionsPage(assessment.assessmentId, assessment.title, token);
+    });
+
+    row.appendChild(manageQuestionsBtn);
+
+    return row;
+}
+
+/* ============================================
+   MANAGE QUESTIONS PAGE
+   ============================================ */
+
+let currentQuestionsAssessmentId = null;
+
+/**
+ * Shows the per-assessment question management section, hiding the
+ * assessment management section. Same self-contained visibility
+ * pattern as content-manage-assessment.
+ */
+function showManageQuestionsPage(assessmentId, assessmentTitle, token) {
+    const assessmentSection = document.getElementById('content-manage-assessment');
+    const questionsSection = document.getElementById('content-manage-questions');
+    const titleEl = document.getElementById('manageQuestionsAssessmentTitle');
+
+    if (!questionsSection) {
+        console.warn('Manage questions section (#content-manage-questions) not found in DOM.');
+        return;
+    }
+
+    currentQuestionsAssessmentId = assessmentId;
+    if (titleEl) titleEl.textContent = assessmentTitle ?? '';
+
+    if (assessmentSection) assessmentSection.classList.remove('active');
+    questionsSection.classList.add('active');
+
+    loadQuestionsForAssessment(assessmentId, token);
+}
+
+/**
+ * Hides the question management section and returns to the
+ * assessment management section (not the top-level class list).
+ */
+function hideManageQuestionsPage() {
+    const assessmentSection = document.getElementById('content-manage-assessment');
+    const questionsSection = document.getElementById('content-manage-questions');
+
+    if (questionsSection) questionsSection.classList.remove('active');
+    if (assessmentSection) assessmentSection.classList.add('active');
+
+    currentQuestionsAssessmentId = null;
+}
+
+/**
+ * Fetches questions (with options) for an assessment and renders
+ * them into #questionListContainer.
+ */
+async function loadQuestionsForAssessment(assessmentId, token) {
+    const endpoint = `${window.base}/physio/trainer/question/list?assessmentId=${assessmentId}`;
+    const container = document.getElementById('questionListContainer');
+
+    if (!container) {
+        console.warn('Question list container (#questionListContainer) not found in DOM.');
+        return;
+    }
+
+    container.innerHTML = `<p class="text-sm text-slate-500">Loading questions...</p>`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        container.innerHTML = '';
+
+        if (result.status === 'success' && Array.isArray(result.data)) {
+            if (result.data.length === 0) {
+                container.innerHTML = `<p class="text-sm text-slate-500">No questions yet. Create one below.</p>`;
+                return;
+            }
+
+            result.data.forEach((question, index) => {
+                container.appendChild(buildQuestionItem(question, index + 1));
+            });
+
+        } else {
+            console.error('API returned an unexpected structure or error message:', result.message);
+            showToast('Failed to load questions.', 'error');
+        }
+
+    } catch (error) {
+        console.error('Failed to fetch questions:', error);
+        container.innerHTML = `<p class="text-sm text-rose-600">Failed to load questions.</p>`;
+    }
+}
+
+/**
+ * Builds a single question card, showing all 4 options with the
+ * correct one highlighted. No edit/delete yet — display only.
+ */
+function buildQuestionItem(question, displayNumber) {
+    const card = document.createElement('div');
+    card.className = 'bg-white p-5 rounded-xl shadow-sm border border-slate-200';
+    card.dataset.questionId = question.questionId;
+
+    const optionsHtml = (question.options ?? []).map(opt => {
+        const isCorrect = opt.isCorrect === true;
+        return `
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-slate-50 border border-slate-100'}">
+                <span class="text-xs font-bold ${isCorrect ? 'text-green-700' : 'text-slate-500'}">${opt.optionLabel}</span>
+                <span class="text-sm ${isCorrect ? 'text-green-800 font-medium' : 'text-slate-700'}">${opt.optionText}</span>
+                ${isCorrect ? '<span class="material-symbols-outlined text-[16px] text-green-600 ml-auto">check_circle</span>' : ''}
+            </div>
+        `;
+    }).join('');
+
+    card.innerHTML = `
+        <p class="font-semibold text-slate-800 mb-3">${displayNumber}. ${question.questionText}</p>
+        <div class="space-y-1.5">${optionsHtml}</div>
+    `;
+
+    return card;
+}
+
+/**
+ * Builds one option input row (radio + label + text input) for the
+ * question creation modal.
+ */
+function buildOptionInputRow(label) {
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-2';
+    row.innerHTML = `
+        <input type="radio" name="correctOption" value="${label}" class="w-4 h-4 accent-brand-600" />
+        <span class="text-sm font-semibold text-slate-600 w-5">${label}</span>
+        <input type="text" data-option-label="${label}" placeholder="Option ${label} text"
+            class="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none" />
+    `;
+    return row;
+}
+
+/**
+ * Opens the question creation modal, resetting all fields.
+ */
+function openQuestionCreateModal() {
+    const modal = document.getElementById('question-create-modal');
+    const questionTextInput = document.getElementById('questionTextInput');
+    const optionsContainer = document.getElementById('optionInputsContainer');
+
+    if (!modal || !questionTextInput || !optionsContainer) {
+        console.warn('Question create modal elements not found in DOM.');
+        return;
+    }
+
+    questionTextInput.value = '';
+    optionsContainer.innerHTML = '';
+    ['A', 'B', 'C', 'D'].forEach(label => {
+        optionsContainer.appendChild(buildOptionInputRow(label));
+    });
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+/**
+ * Closes the question creation modal.
+ */
+function closeQuestionCreateModal() {
+    const modal = document.getElementById('question-create-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+/**
+ * Collects the question form fields, validates them, and submits
+ * to POST /trainer/question/create.
+ */
+async function saveNewQuestion(token) {
+    if (currentQuestionsAssessmentId === null) {
+        console.warn('No active assessment context for saving a question.');
+        return;
+    }
+
+    const questionText = document.getElementById('questionTextInput').value.trim();
+    const optionInputs = document.querySelectorAll('#optionInputsContainer input[type="text"]');
+    const correctRadio = document.querySelector('input[name="correctOption"]:checked');
+
+    if (!questionText) {
+        showToast('Question text is required.', 'error');
+        return;
+    }
+
+    const options = Array.from(optionInputs).map(input => ({
+        label: input.dataset.optionLabel,
+        text: input.value.trim(),
+        isCorrect: correctRadio ? correctRadio.value === input.dataset.optionLabel : false
+    }));
+
+    if (options.some(opt => !opt.text)) {
+        showToast('All 4 options must have text.', 'error');
+        return;
+    }
+
+    if (!correctRadio) {
+        showToast('Select which option is correct.', 'error');
+        return;
+    }
+
+    const saveBtn = document.getElementById('saveQuestionBtn');
+    const originalText = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    try {
+        const endpoint = `${window.base}/physio/trainer/question/create`;
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                assessmentId: currentQuestionsAssessmentId,
+                questionText: questionText,
+                options: options
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.status === 'success') {
+            showToast('Question created successfully.', 'success');
+            closeQuestionCreateModal();
+            loadQuestionsForAssessment(currentQuestionsAssessmentId, token);
+        } else {
+            showToast(result.message || 'Failed to create question.', 'error');
+        }
+
+    } catch (error) {
+        console.error('Error creating question:', error);
+        showToast('Failed to create question.', 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalText;
+    }
+}
+
+// Wire up question management controls once DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    const backBtn = document.getElementById('backToManageAssessmentBtn');
+    const addQuestionBtn = document.getElementById('addQuestionBtn');
+    const closeModalBtn = document.getElementById('closeQuestionCreateModalBtn');
+    const cancelModalBtn = document.getElementById('cancelQuestionCreateBtn');
+    const modalBackdrop = document.getElementById('question-create-modal-backdrop');
+    const saveQuestionBtn = document.getElementById('saveQuestionBtn');
+
+    if (backBtn) backBtn.addEventListener('click', hideManageQuestionsPage);
+    if (addQuestionBtn) addQuestionBtn.addEventListener('click', openQuestionCreateModal);
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeQuestionCreateModal);
+    if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeQuestionCreateModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeQuestionCreateModal);
+    if (saveQuestionBtn) {
+        saveQuestionBtn.addEventListener('click', () => {
+            const token = sessionStorage.getItem('token');
+            saveNewQuestion(token);
+        });
+    }
+});
+
+function promptForAssessmentTitle() {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('assessment-name-modal');
+        const backdrop = document.getElementById('assessment-name-modal-backdrop');
+        const input = document.getElementById('assessmentNameInput');
+        const confirmBtn = document.getElementById('assessmentNameConfirmBtn');
+        const cancelBtn = document.getElementById('assessmentNameCancelBtn');
+
+        if (!modal || !input || !confirmBtn || !cancelBtn) {
+            console.warn('Assessment name prompt modal elements not found in DOM.');
+            resolve(null);
+            return;
+        }
+
+        input.value = '';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        input.focus();
+
+        function cleanup(result) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            confirmBtn.removeEventListener('click', onConfirm);
+            cancelBtn.removeEventListener('click', onCancel);
+            backdrop.removeEventListener('click', onCancel);
+            input.removeEventListener('keydown', onKeydown);
+            resolve(result);
+        }
+
+        function onConfirm() {
+            const value = input.value.trim();
+            cleanup(value.length > 0 ? value : null);
+        }
+
+        function onCancel() {
+            cleanup(null);
+        }
+
+        function onKeydown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                onConfirm();
+            } else if (e.key === 'Escape') {
+                onCancel();
+            }
+        }
+
+        confirmBtn.addEventListener('click', onConfirm);
+        cancelBtn.addEventListener('click', onCancel);
+        backdrop.addEventListener('click', onCancel);
+        input.addEventListener('keydown', onKeydown);
+    });
+}
+
+async function createNewAssessment(courseId, token) {
+    const title = await promptForAssessmentTitle();
+    if (!title) return;
+
+    const endpoint = `${window.base}/physio/trainer/assessment/create?courseId=${courseId}&title=${encodeURIComponent(title)}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            credentials: 'include'
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.status === 'success') {
+            showToast('Assessment created successfully.', 'success');
+            loadAssessmentsForCourse(courseId, token);
+        } else {
+            showToast(result.message || 'Failed to create assessment.', 'error');
+        }
+
+    } catch (error) {
+        console.error('Error creating assessment:', error);
+        showToast('Failed to create assessment.', 'error');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const backBtn = document.getElementById('backToAssessmentsBtn');
+    const addBtn = document.getElementById('addAssessmentBtn');
+
+    if (backBtn) {
+        backBtn.addEventListener('click', hideAssessmentManagementPage);
+    }
+
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            const token = sessionStorage.getItem('token');
+            if (currentAssessmentCourseId !== null) {
+                createNewAssessment(currentAssessmentCourseId, token);
+            }
+        });
+    }
+
+    document.querySelectorAll('input[name="page"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            hideManageQuestionsPage();
+            hideAssessmentManagementPage();
+        });
+    });
+});

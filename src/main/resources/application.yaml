@@ -20,8 +20,18 @@ server:
 app:
   api:
     base-url: http://localhost:8080
+    # base-url: https://delirious-aerospace-predefine.ngrok-free.dev
 
   jwt:
     secret: 4sHWaZkvUMig2+ecltlsY9pS7qirYJKGTuFDvLv+oDI=
     expiration-ms: 3600000 # 1 hour in milliseconds
+
+toyyibpay:
+  base-url: https://dev.toyyibpay.com
+  user-secret-key: en6e1skn-ised-xezd-j36g-sugllz9vvfwa
+  category-code: sakb7mly
+  return-url: http://localhost:8080/physio/participant/payment/return
+  callback-url: https://delirious-aerospace-predefine.ngrok-free.dev/physio/participant/payment/callback
+
+
   

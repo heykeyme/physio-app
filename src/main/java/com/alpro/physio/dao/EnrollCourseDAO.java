@@ -65,5 +65,10 @@ public class EnrollCourseDAO {
           course.setStatus(rs.getInt("status"));
           return course;
       }, userId);
-  }
+    }
+
+    public void enrollParticipant(String userId, Integer courseId) {
+      String sql = "INSERT INTO enroll_course (user_id, course_id) VALUES (?, ?)";
+      jdbcTemplate.update(sql, userId, courseId);
+    }
 }

@@ -1,0 +1,41 @@
+<section id="content-feedback" class="page-content space-y-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Course Feedback</h1>
+        <p class="text-sm text-slate-500 mt-1">Help us improve by sharing your learning experience.</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 max-w-2xl space-y-5">
+        <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-2">Select Course</label>
+            <div class="relative">
+                <select class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white appearance-none cursor-pointer">
+                    <option>Advanced Manual Therapy</option>
+                    <option>Rehabilitation Science</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                    <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <p class="text-sm font-semibold text-slate-800 mb-2">Overall Rating</p>
+            <div class="flex gap-1 text-amber-400 cursor-pointer">
+                <span class="material-symbols-outlined fill-icon text-[32px]">star</span>
+                <span class="material-symbols-outlined fill-icon text-[32px]">star</span>
+                <span class="material-symbols-outlined fill-icon text-[32px]">star</span>
+                <span class="material-symbols-outlined fill-icon text-[32px]">star</span>
+                <span class="material-symbols-outlined text-[32px]">star</span>
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-2">Written Review</label>
+            <textarea class="w-full border border-slate-200 rounded-lg p-4 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none" rows="4" placeholder="Share your experience, what you liked, and what could be improved..."></textarea>
+        </div>
+
+        <div class="pt-2">
+            <button class="px-6 py-2.5 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 transition-colors shadow-sm w-full sm:w-auto">Submit Feedback</button>
+        </div>
+    </div>
+</section>

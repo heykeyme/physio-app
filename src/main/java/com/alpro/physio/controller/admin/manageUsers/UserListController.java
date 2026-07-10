@@ -54,8 +54,8 @@ public class UserListController {
 
             logger.info("Fetching user list, page: {}", page);
 
-            List<UserDTO> users = dao.userDAO().findAllUsers(page);
-            int totalUsers = dao.userDAO().countAllUsers();
+            List<UserDTO> users = dao.userDAO().findParticipantsAndTrainers(page);
+            int totalUsers = dao.userDAO().countParticipantsAndTrainers();
             int totalPages = (int) Math.ceil((double) totalUsers / 10);
 
             List<Map<String, Object>> userList = new ArrayList<>();
