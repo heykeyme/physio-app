@@ -37,13 +37,13 @@ public class LoginController {
         try {
             UserDTO user = dao.userDAO().findByEmail(loginRequest.getEmail());
 
-            if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()) || user.isStatus() == null || user.isStatus() != 1) {
                 response.put("success", false);
-                response.put("message", "Invalid email or password");
+                response.put("message", "Invalid email or password or you are deactivate user");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
 
-            if (!user.isStatus()) {
+            if (user.isStatus() == null || user.isStatus() != 1) {
                 response.put("success", false);
                 response.put("message", "Account is inactive");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);

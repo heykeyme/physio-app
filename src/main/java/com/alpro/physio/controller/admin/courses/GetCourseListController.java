@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alpro.physio.dao.root.Dao;
 import com.alpro.physio.dto.CourseDTO;
+import com.alpro.physio.dto.EnrollCourseDTO;
 import com.alpro.physio.dto.UserDTO;
 import com.alpro.physio.service.AuthService;
 
@@ -47,6 +48,9 @@ public class GetCourseListController {
                 Map<String, Object> courseData = new LinkedHashMap<>();
                 courseData.put("courseId", courseDTO.getId());
                 courseData.put("courseName", courseDTO.getCourseName());
+
+                int enrollCourse = dao.enrollCourseDAO().countEnrollmentByCourseId(courseDTO.getId());
+                courseData.put("participant", enrollCourse);
 
                 UserDTO trainer = dao.userDAO().findByUserId(courseDTO.getStaffId());
                 courseData.put("trainerName", trainer.getFullname());

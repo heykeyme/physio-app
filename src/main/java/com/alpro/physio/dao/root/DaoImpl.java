@@ -7,6 +7,7 @@ import com.alpro.physio.dao.UserDAO;
 import com.alpro.physio.dao.CourseDAO;
 import com.alpro.physio.dao.CourseFeedbackDAO;
 import com.alpro.physio.dao.EnrollCourseDAO;
+import com.alpro.physio.dao.MasterRoleDAO;
 import com.alpro.physio.dao.ModuleDAO;
 
 @Component
@@ -27,6 +28,9 @@ public class DaoImpl implements Dao {
     @Autowired
     ModuleDAO moduleDAO;
 
+    @Autowired
+    MasterRoleDAO masterRoleDAO;
+
     public UserDAO userDAO() {
         return userDAO;
     }
@@ -45,5 +49,9 @@ public class DaoImpl implements Dao {
 
     public ModuleDAO moduleDAO(){
         return moduleDAO;
+    }
+
+    public MasterRoleDAO masterRoleDAO(){
+        return masterRoleDAO;
     }
 }

@@ -4,7 +4,6 @@ import java.security.SecureRandom;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -46,7 +45,7 @@ public class UserDAO {
             user.setEmail(rs.getString("email"));
             user.setFullname(rs.getString("fullname"));
             user.setPassword(rs.getString("password"));
-            user.setStatus(rs.getBoolean("status"));
+            user.setStatus(rs.getInt("status"));
             user.setRoleId(rs.getInt("role_id"));
             return user;
         }, email);
@@ -74,4 +73,33 @@ public class UserDAO {
         String sql = "SELECT * FROM `user` WHERE role_id = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(UserDTO.class), roleId);
     }
+
+    public List<UserDTO> findAllUsers(int page) {
+    int pageSize = 10;
+    int offset = (page - 1) * pageSize; // assumes page is 1-indexed
+
+    String sql = "SELECT id, user_id, email, fullname, password, status, role_id "
+               + "FROM `user` ORDER BY id ASC LIMIT ? OFFSET ?";
+
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+        UserDTO user = new UserDTO();
+        user.setId(rs.getInt("id"));
+        user.setUserId(rs.getString("user_id"));
+        user.setEmail(rs.getString("email"));
+        user.setFullname(rs.getString("fullname"));
+        user.setPassword(rs.getString("password"));
+        user.setStatus(rs.getInt("status"));
+        user.setRoleId(rs.getInt("role_id"));
+        return user;
+    }, pageSize, offset);
+}
+
+/**
+ * Returns total user count, needed by the controller to calculate total pages.
+ */
+public int countAllUsers() {
+    String sql = "SELECT COUNT(*) FROM `user`";
+    Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+    return count != null ? count : 0;
+}
 }

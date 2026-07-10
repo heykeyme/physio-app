@@ -36,4 +36,9 @@ public class EnrollCourseDAO {
       String sql = "SELECT * FROM enroll_course WHERE course_id = ?";
       return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), course_id);
     }
+
+    public Integer updateParticipantAttendance(String userId, int courseId, Integer attendanceStatus) {
+      String sql = "UPDATE enroll_course SET attendance_status = ? WHERE user_id = ? AND course_id = ?";
+      return jdbcTemplate.update(sql, attendanceStatus, userId, courseId);
+    }
 }

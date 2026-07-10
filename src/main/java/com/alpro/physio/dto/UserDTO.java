@@ -6,7 +6,7 @@ public class UserDTO {
     private String email;
     private String fullname;
     private String password;
-    private boolean status;
+    private Integer status;
     private int roleId;
 
     public int getId() {
@@ -49,11 +49,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public boolean isStatus() {
+    public Integer isStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

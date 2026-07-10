@@ -47,6 +47,7 @@ public class GetCourseEdit {
             Map<String, Object> data = new LinkedHashMap<>();
             data.put("id", course.getId());
             data.put("courseName", course.getCourseName());
+            data.put("trainerid", course.getStaffId());
             data.put("trainerName", trainer != null ? trainer.getFullname() : null);
             data.put("courseDate", course.getCourseDate());
             data.put("courseStartTime", course.getCourseStartTime());

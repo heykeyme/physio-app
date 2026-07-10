@@ -100,30 +100,104 @@
         </div>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start">
-                <h3 class="font-semibold text-slate-800">Advanced Manual Therapy</h3>
-                <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase tracking-wide">Active</span>
+    <!-- ============================= -->
+    <!-- EDIT COURSE MODAL — NEW BLOCK -->
+    <!-- ============================= -->
+    <input type="checkbox" id="edit-course-modal-toggle" class="hidden peer" />
+
+    <div class="fixed inset-0 z-50 hidden peer-checked:flex items-center justify-center p-4 bg-on-background/40 backdrop-blur-sm">
+        <label for="edit-course-modal-toggle" class="fixed inset-0 w-full h-full cursor-default"></label>
+
+        <div class="relative bg-white rounded-2xl shadow-xl border border-slate-200 max-w-lg w-full overflow-hidden z-10">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center border border-brand-100">
+                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800">Edit Course</h2>
+                        <p class="text-xs text-slate-500">Update the details of this course</p>
+                    </div>
+                </div>
+                <label for="edit-course-modal-toggle" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 p-1.5 rounded-lg transition-colors cursor-pointer inline-flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </label>
             </div>
-            <p class="text-sm text-slate-500 mt-2">Trainer: Dr. Sarah Chen</p>
-            <p class="text-sm text-slate-500">Enrolled: 24 participants</p>
-            <div class="mt-4 flex gap-2">
-                <button class="text-xs font-medium px-3 py-1.5 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors">Edit</button>
-                <button class="text-xs font-medium px-3 py-1.5 bg-rose-50 text-rose-700 rounded-lg hover:bg-rose-100 transition-colors">Deactivate</button>
-            </div>
+
+            <form id="editCourseForm" class="divide-y divide-slate-100">
+                <div class="p-6 space-y-4 max-h-[calc(85vh-130px)] overflow-y-auto">
+
+                    <input type="hidden" id="editCourseId" name="courseId" />
+
+                    <div>
+                        <label for="editCourseName" class="block text-sm font-semibold text-slate-800 mb-1">Course Name <span class="text-error">*</span></label>
+                        <input type="text" id="editCourseName" name="courseName" required
+                            placeholder="e.g., Advanced Dry Needling Level 1"
+                            class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white shadow-sm transition-all" />
+                    </div>
+
+                    <div>
+                        <label for="editTrainerName" class="block text-sm font-semibold text-slate-800 mb-1">
+                            Assigned Trainer <span class="text-error">*</span>
+                        </label>
+                        <div class="relative">
+                            <select id="editTrainerName" name="trainerId" required
+                                class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white shadow-sm transition-all appearance-none cursor-pointer text-slate-700">
+                                <option value="" disabled selected>Select a trainer...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="editCourseDate" class="block text-sm font-semibold text-slate-800 mb-1">Course Date <span class="text-error">*</span></label>
+                        <input type="date" id="editCourseDate" name="courseDate" required
+                            class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white shadow-sm transition-all text-slate-700" />
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="editStartTime" class="block text-sm font-semibold text-slate-800 mb-1">Start Time <span class="text-error">*</span></label>
+                            <input type="time" id="editStartTime" name="startTime" required
+                                class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white shadow-sm transition-all text-slate-700" />
+                        </div>
+                        <div>
+                            <label for="editEndTime" class="block text-sm font-semibold text-slate-800 mb-1">End Time <span class="text-error">*</span></label>
+                            <input type="time" id="editEndTime" name="endTime" required
+                                class="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white shadow-sm transition-all text-slate-700" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="editCoursePrice" class="block text-sm font-semibold text-slate-800 mb-1">Course Price <span class="text-error">*</span></label>
+                        <div class="relative rounded-lg shadow-sm">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 border-r border-slate-200 pr-2.5 my-1 bg-slate-50 rounded-l-md">
+                                <span class="text-slate-500 sm:text-sm font-semibold">RM</span>
+                            </div>
+                            <input type="number" id="editCoursePrice" name="coursePrice"
+                                step="0.01" min="0.00" placeholder="0.00" required
+                                class="w-full border border-slate-200 rounded-lg pl-14 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white transition-all text-slate-800 font-medium" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="px-6 py-4 bg-slate-50 flex items-center justify-end gap-3">
+                    <label for="edit-course-modal-toggle"
+                        class="px-4 py-2 border border-slate-200 bg-white text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-100 hover:text-slate-800 transition-colors shadow-sm cursor-pointer inline-flex items-center justify-center">
+                        Cancel
+                    </label>
+                    <button type="submit" id="updateCourseBtn"
+                            class="flex items-center gap-2 px-5 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        <span>Update Course</span>
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start">
-                <h3 class="font-semibold text-slate-800">Rehabilitation Science</h3>
-                <span class="px-2 py-0.5 bg-rose-100 text-rose-700 rounded-full text-[10px] font-bold uppercase tracking-wide">Inactive</span>
-            </div>
-            <p class="text-sm text-slate-500 mt-2">Trainer: Dr. Michael Reed</p>
-            <p class="text-sm text-slate-500">Enrolled: 18 participants</p>
-            <div class="mt-4 flex gap-2">
-                <button class="text-xs font-medium px-3 py-1.5 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition-colors">Edit</button>
-                <button class="text-xs font-medium px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors">Activate</button>
-            </div>
-        </div>
+    </div>
+    <!-- ========== END EDIT MODAL ========== -->
+
+    <div id="courseListContainer" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- cards will be injected here by JS -->
     </div>
 </section>
