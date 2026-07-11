@@ -143,15 +143,12 @@
                     <h1 class="text-[20px] font-bold text-primary">AlproPhysio</h1>
                 </div>
                 <div class="hidden lg:block text-sm text-slate-500 font-medium">
-                    June 24, 2026
+                    <span id="headerCurrentDate">Loading...</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">
-                        <span class="material-symbols-outlined">notifications</span>
-                    </button>
-                    <label for="page-profile" class="cursor-pointer flex items-center gap-3 hover:bg-slate-100 rounded-full p-1 pr-3 transition-colors">
-                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-sm font-bold border border-brand-200">JD</div>
-                        <span class="text-sm font-medium text-slate-700 hidden sm:block">John Doe</span>
+                    <label class="cursor-pointer flex items-center gap-3 hover:bg-slate-100 rounded-full p-1 pr-3 transition-colors">
+                        <div id="headerUserInitials" class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-sm font-bold border border-brand-200">--</div>
+                        <span id="headerUserName" class="text-sm font-medium text-slate-700 hidden sm:block">Loading...</span>
                     </label>
                 </div>
             </header>

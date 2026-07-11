@@ -89,9 +89,66 @@ async function loadParticipantStats(token) {
     }
 }
 
+/**
+ * Sets today's date in the header (independent of any API call).
+ */
+function loadHeaderDate() {
+    const dateEl = document.getElementById('headerCurrentDate');
+    if (!dateEl) return;
+
+    const today = new Date();
+    dateEl.textContent = today.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    });
+}
+
+/**
+ * Fetches the logged-in user's name and updates the header, reusing
+ * the dashboard summary endpoint since it already returns fullName.
+ */
+function loadHeaderUserInfo() {
+    const nameEl = document.getElementById('headerUserName');
+    const initialsEl = document.getElementById('headerUserInitials');
+
+    if (!nameEl || !initialsEl) return;
+
+    try {
+        const userJson = sessionStorage.getItem('user');
+        if (!userJson) {
+            nameEl.textContent = 'User';
+            initialsEl.textContent = '--';
+            return;
+        }
+
+        const user = JSON.parse(userJson);
+        const fullName = user.fullname || 'User';
+
+        nameEl.textContent = fullName;
+        initialsEl.textContent = getInitials(fullName);
+
+    } catch (error) {
+        console.error('Failed to parse user session data:', error);
+        nameEl.textContent = 'User';
+        initialsEl.textContent = '--';
+    }
+}
+
+/**
+ * Extracts up to 2 initials from a full name, e.g. "John Doe" -> "JD".
+ */
+function getInitials(fullName) {
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const token = sessionStorage.getItem('token');
     if (!token) return;
     loadManagementDashboard(token);
     loadParticipantStats(token);
+    loadHeaderUserInfo(token);
+    loadHeaderDate();
 });
