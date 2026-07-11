@@ -87,4 +87,15 @@ public class EnrollCourseDAO {
       Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
       return count != null ? count : 0;
     }
+
+    public EnrollCourseDTO findEnrollmentByUserAndCourse(String userId, Integer courseId) {
+      String sql = "SELECT * FROM enroll_course WHERE user_id = ? AND course_id = ?";
+      return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(EnrollCourseDTO.class), userId, courseId)
+              .stream().findFirst().orElse(null);
+    }
+
+    public void updateCourseStatus(String userId, Integer courseId, Integer status) {
+      String sql = "UPDATE enroll_course SET course_status = ? WHERE user_id = ? AND course_id = ?";
+      jdbcTemplate.update(sql, status, userId, courseId);
+    }
 }

@@ -858,7 +858,10 @@ function buildAssessmentCourseCard(course) {
     manageBtn.textContent = 'Manage Assessment';
     manageBtn.addEventListener('click', () => {
         const token = sessionStorage.getItem('token');
-        showAssessmentManagementPage(course.courseId, course.courseName, token);
+        // Assessments now belong to a module, not a course directly,
+        // so this goes to the module-picker screen first instead of
+        // straight to the assessment list.
+        showModuleSelectionForAssessment(course.courseId, course.courseName, token);
     });
 
     card.appendChild(manageBtn);
@@ -866,10 +869,109 @@ function buildAssessmentCourseCard(course) {
     return card;
 }
 
-let currentAssessmentCourseId = null;
+/* ============================================
+   MODULE SELECTION (for assessments)
+   ============================================ */
 
-function showAssessmentManagementPage(courseId, courseName, token) {
+let currentSelectModuleCourseId = null;
+
+/**
+ * Shows the module-picker screen for a given course, hiding the
+ * class list. This is the intermediate step required since
+ * assessments now belong to a module, not a course directly.
+ */
+function showModuleSelectionForAssessment(courseId, courseName, token) {
     const listSection = document.getElementById('content-assessments');
+    const selectSection = document.getElementById('content-select-module');
+    const titleEl = document.getElementById('selectModuleCourseName');
+
+    if (!selectSection) {
+        console.warn('Module selection section (#content-select-module) not found in DOM.');
+        return;
+    }
+
+    currentSelectModuleCourseId = courseId;
+    if (titleEl) titleEl.textContent = courseName ?? '';
+
+    if (listSection) listSection.style.display = 'none';
+    selectSection.classList.add('active');
+
+    loadModulesForAssessmentSelection(courseId, token);
+}
+
+function hideModuleSelectionForAssessment() {
+    const listSection = document.getElementById('content-assessments');
+    const selectSection = document.getElementById('content-select-module');
+
+    if (selectSection) selectSection.classList.remove('active');
+    if (listSection) listSection.style.display = '';
+
+    currentSelectModuleCourseId = null;
+}
+
+/**
+ * Fetches modules for a course (reusing the existing Manage Course
+ * modules endpoint, ignoring the videos/pdfs fields it also returns)
+ * and renders them as clickable rows.
+ */
+async function loadModulesForAssessmentSelection(courseId, token) {
+    const endpoint = `${window.base}/physio/trainer/classes/manage/modules?courseId=${courseId}`;
+    const container = document.getElementById('moduleSelectionListContainer');
+
+    if (!container) return;
+
+    container.innerHTML = `<p class="text-sm text-slate-500">Loading modules...</p>`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const result = await response.json();
+        container.innerHTML = '';
+
+        if (result.status === 'success' && Array.isArray(result.data)) {
+            if (result.data.length === 0) {
+                container.innerHTML = `<p class="text-sm text-slate-500">No modules found for this course yet. Add one via "Manage" first.</p>`;
+                return;
+            }
+
+            result.data.forEach(module => {
+                const row = document.createElement('div');
+                row.className = 'bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition-shadow cursor-pointer';
+                row.innerHTML = `<p class="font-bold text-slate-800">${module.moduleName}</p>`;
+
+                row.addEventListener('click', () => {
+                    const currentToken = sessionStorage.getItem('token');
+                    showAssessmentManagementPage(module.moduleId, module.moduleName, currentToken);
+                });
+
+                container.appendChild(row);
+            });
+        } else {
+            console.error('API returned an unexpected structure or error message:', result.message);
+        }
+
+    } catch (error) {
+        console.error('Failed to fetch modules:', error);
+        container.innerHTML = `<p class="text-sm text-rose-600">Failed to load modules.</p>`;
+    }
+}
+
+/* ============================================
+   MANAGE ASSESSMENT PAGE
+   ============================================ */
+
+let currentAssessmentCourseId = null; // holds a moduleId now, name kept for minimal diff elsewhere
+
+function showAssessmentManagementPage(moduleId, moduleName, token) {
+    const selectSection = document.getElementById('content-select-module');
     const manageSection = document.getElementById('content-manage-assessment');
     const titleEl = document.getElementById('manageAssessmentCourseName');
 
@@ -878,27 +980,27 @@ function showAssessmentManagementPage(courseId, courseName, token) {
         return;
     }
 
-    currentAssessmentCourseId = courseId;
-    if (titleEl) titleEl.textContent = courseName ?? '';
+    currentAssessmentCourseId = moduleId;
+    if (titleEl) titleEl.textContent = moduleName ?? '';
 
-    if (listSection) listSection.style.display = 'none';
+    if (selectSection) selectSection.classList.remove('active');
     manageSection.classList.add('active');
 
-    loadAssessmentsForCourse(courseId, token);
+    loadAssessmentsForCourse(moduleId, token);
 }
 
 function hideAssessmentManagementPage() {
-    const listSection = document.getElementById('content-assessments');
+    const selectSection = document.getElementById('content-select-module');
     const manageSection = document.getElementById('content-manage-assessment');
 
     if (manageSection) manageSection.classList.remove('active');
-    if (listSection) listSection.style.display = '';
+    if (selectSection) selectSection.classList.add('active'); // back to module picker, not the class list
 
     currentAssessmentCourseId = null;
 }
 
 async function loadAssessmentsForCourse(courseId, token) {
-    const endpoint = `${window.base}/physio/trainer/assessment/list?courseId=${courseId}`;
+    const endpoint = `${window.base}/physio/trainer/assessment/list?moduleId=${courseId}`;
     const container = document.getElementById('assessmentListContainer');
 
     if (!container) {
@@ -1300,7 +1402,7 @@ async function createNewAssessment(courseId, token) {
     const title = await promptForAssessmentTitle();
     if (!title) return;
 
-    const endpoint = `${window.base}/physio/trainer/assessment/create?courseId=${courseId}&title=${encodeURIComponent(title)}`;
+    const endpoint = `${window.base}/physio/trainer/assessment/create?moduleId=${courseId}&title=${encodeURIComponent(title)}`;
 
     try {
         const response = await fetch(endpoint, {
@@ -1327,9 +1429,14 @@ async function createNewAssessment(courseId, token) {
 document.addEventListener('DOMContentLoaded', () => {
     const backBtn = document.getElementById('backToAssessmentsBtn');
     const addBtn = document.getElementById('addAssessmentBtn');
+    const backToModulesBtn = document.getElementById('backToAssessmentsFromModulesBtn');
 
     if (backBtn) {
         backBtn.addEventListener('click', hideAssessmentManagementPage);
+    }
+
+    if (backToModulesBtn) {
+        backToModulesBtn.addEventListener('click', hideModuleSelectionForAssessment);
     }
 
     if (addBtn) {
@@ -1345,6 +1452,7 @@ document.addEventListener('DOMContentLoaded', () => {
         radio.addEventListener('change', () => {
             hideManageQuestionsPage();
             hideAssessmentManagementPage();
+            hideModuleSelectionForAssessment();
         });
     });
 });

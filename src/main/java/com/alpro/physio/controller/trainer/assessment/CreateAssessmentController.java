@@ -33,7 +33,7 @@ public class CreateAssessmentController {
     @PostMapping("/create")
     public ResponseEntity<?> createAssessment(
             HttpServletRequest request,
-            @RequestParam Integer courseId,
+            @RequestParam Integer moduleId,
             @RequestParam String title) {
 
         ResponseEntity<Map<String, Object>> authResponse = authService.validateAuth(request);
@@ -50,16 +50,16 @@ public class CreateAssessmentController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            logger.info("Creating assessment for courseId: {}", courseId);
+            logger.info("Creating assessment for moduleId: {}", moduleId);
 
-            AssessmentDTO assessment = dao.assessmentDAO().insertAssessmentByCourseId(courseId, title);
+            AssessmentDTO assessment = dao.assessmentDAO().insertAssessmentByModuleId(moduleId, title);
 
             response.put("status", "success");
             response.put("message", "Assessment created successfully.");
             response.put("data", assessment);
 
         } catch (Exception e) {
-            logger.error("Failed to create assessment for courseId: {}", courseId, e);
+            logger.error("Failed to create assessment for moduleId: {}", moduleId, e);
             response.put("status", "error");
             response.put("message", "Failed to create assessment.");
             response.put("error", e.getMessage()); // TEMPORARY - remove before production

@@ -100,6 +100,13 @@
         #manage-modal .accordion-chevron { transition: transform 150ms ease; }
         #manage-modal details[open] .accordion-chevron { transform: rotate(180deg); }
 
+        /* ===================== ASSESSMENT MANAGEMENT FLOW (JS-toggled, self-contained) =====================
+           These sections live inside <main> but are NOT part of the name="page" nav
+           rotation — visibility is driven purely by JS adding/removing .active,
+           independent of whatever mechanism trainer.js uses for the nav radios. */
+        #content-select-module { display: none; }
+        #content-select-module.active { display: block; }
+
         #content-manage-assessment { display: none; }
         #content-manage-assessment.active { display: block; }
 
@@ -208,6 +215,26 @@
                 <div th:replace="~{pages/trainers/schedule.html}"></div>
 
                 <div th:replace="~{pages/trainers/assessment.html}"></div>
+
+                <!-- ===================== MODULE SELECTION (new) =====================
+                     Inserted between the class list and assessment management,
+                     since assessments now belong to a module, not a course
+                     directly. Trainer picks which module's assessments to manage. -->
+                <section id="content-select-module" class="space-y-6">
+                    <button id="backToAssessmentsFromModulesBtn" type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-700 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        Back to Assessments
+                    </button>
+
+                    <div>
+                        <h1 id="selectModuleCourseName" class="text-2xl font-bold text-slate-800">Loading...</h1>
+                        <p class="text-sm text-slate-500 mt-1">Select a module to manage its assessments.</p>
+                    </div>
+
+                    <div id="moduleSelectionListContainer" class="space-y-3 max-w-3xl">
+                        <!-- modules injected by JS -->
+                    </div>
+                </section>
 
                 <section id="content-manage-assessment" class="space-y-6">
                     <button id="backToAssessmentsBtn" type="button" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-700 transition-colors">

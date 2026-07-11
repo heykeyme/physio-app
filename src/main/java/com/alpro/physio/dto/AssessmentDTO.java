@@ -3,7 +3,7 @@ package com.alpro.physio.dto;
 public class AssessmentDTO {
 
     private Integer id;
-    private Integer courseId;
+    private Integer moduleId;
     private String title;
 
     // Getters and Setters
@@ -16,12 +16,12 @@ public class AssessmentDTO {
         this.id = id;
     }
 
-    public Integer getCourseId() {
-        return courseId;
+    public Integer getModuleId() {
+        return moduleId;
     }
 
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
+    public void setModuleId(Integer moduleId) {
+        this.moduleId = moduleId;
     }
 
     public String getTitle() {

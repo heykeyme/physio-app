@@ -33,9 +33,9 @@ public class GetAssessmentDetails {
     private AuthService authService;
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAssessmentsByCourse(
+    public ResponseEntity<?> getAssessmentsByModule(
             HttpServletRequest request,
-            @RequestParam Integer courseId) {
+            @RequestParam Integer moduleId) {
 
         ResponseEntity<Map<String, Object>> authResponse = authService.validateAuth(request);
         if (authResponse != null) {
@@ -45,16 +45,16 @@ public class GetAssessmentDetails {
         Map<String, Object> response = new LinkedHashMap<>();
 
         try {
-            logger.info("Fetching assessments for courseId: {}", courseId);
+            logger.info("Fetching assessments for moduleId: {}", moduleId);
 
-            List<AssessmentDTO> assessments = dao.assessmentDAO().findAssessmentsByCourseId(courseId);
+            List<AssessmentDTO> assessments = dao.assessmentDAO().findAssessmentsByModuleId(moduleId);
             List<Map<String, Object>> assessmentList = new ArrayList<>();
 
             if (assessments != null && !assessments.isEmpty()) {
                 for (AssessmentDTO assessment : assessments) {
                     Map<String, Object> item = new LinkedHashMap<>();
                     item.put("assessmentId", assessment.getId());
-                    item.put("courseId", assessment.getCourseId());
+                    item.put("moduleId", assessment.getModuleId());
                     item.put("title", assessment.getTitle());
                     assessmentList.add(item);
                 }
@@ -65,7 +65,7 @@ public class GetAssessmentDetails {
             response.put("data", assessmentList);
 
         } catch (Exception e) {
-            logger.error("Failed to retrieve assessments for courseId: {}", courseId, e);
+            logger.error("Failed to retrieve assessments for moduleId: {}", moduleId, e);
             response.put("status", "error");
             response.put("message", "Failed to retrieve assessments.");
             response.put("error", e.getMessage()); // TEMPORARY - remove before production
